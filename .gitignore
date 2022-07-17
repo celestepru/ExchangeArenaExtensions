@@ -1,0 +1,12 @@
+# IDE Files #
+.idea/
+*.iml
+
+# Compiled Source #
+out/
+
+# Output data #
+results/
+
+# Notes #
+NOTES.md
