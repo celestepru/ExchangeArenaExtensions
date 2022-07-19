@@ -10,6 +10,7 @@ import java.util.Random;
 class Agent {
     // Unique identifier for the agent.
     int agentID;
+    private int maxGain = 100;
 
     // Instance variables to store the agents state, relations and ongoing exchanges.
     private int agentType;
@@ -415,12 +416,29 @@ class Agent {
      * @return ArrayList<Integer> Returns the time slots that the Agent is allocated but may potentially exchange.
      */
     ArrayList<Integer> publishUnlockedTimeSlots() {
-        ArrayList<Integer> unlockedTimeSlots;
-        unlockedTimeSlots = new ArrayList<>(nonExistingTimeSlots(allocatedTimeSlots, requestedTimeSlots));
-
+        ArrayList<Integer> unlockedTimeSlots = new ArrayList<>();
+        for(int s : allocatedTimeSlots) {
+            int gain = getFlexibleGain(s, allocatedTimeSlots);
+            if(gain < maxGain) {
+                unlockedTimeSlots.add(s);
+            }
+        }
         return unlockedTimeSlots;
     }
 
+    ArrayList<Integer> publishUnsatisfiedTimeSlots() {
+        ArrayList<Integer> unlockedTimeSlots = new ArrayList<>();
+        for(int s : allocatedTimeSlots) {
+            int gain = getFlexibleGain(s, allocatedTimeSlots);
+            if(gain < maxGain-marginOfKindness) {
+                unlockedTimeSlots.add(s);
+            }
+        }
+        if(unlockedTimeSlots.isEmpty()) {
+            unlockedTimeSlots = publishUnlockedTimeSlots();
+        }
+        return unlockedTimeSlots;
+    }
     /**
      * Takes two arrays of time slots, and returns the time slots from the first array that are not present in the
      * second array.
@@ -544,15 +562,20 @@ class Agent {
                     }
                 } else if(Double.compare(potentialSatisfaction, currentSatisfaction) < 0){
                     if(usesSocialCapital && useFlexibility) {
-                       // System.out.println("Ye");
-                        //createFlexibleSatisfactionValues();
-                       // System.out.println("flex");
-                        int requesterGain = exchangeRequestReceived.get(3);
-                        int myGain = getFlexibleGain(exchangeRequestReceived.get(1), null);
-                        System.out.println(requesterGain+">"+myGain+", k:" + marginOfKindness);
-                        if(requesterGain-myGain>marginOfKindness) {
-                            exchangeRequestApproved = true;
-                            dailySocialCapitalExchanges++;
+                        boolean isGood = this.reputationSystem.getAgentReputation(exchangeRequestReceived.get(0));
+                        if(isGood) {
+                            // System.out.println("Ye");
+                            //createFlexibleSatisfactionValues();
+                            // System.out.println("flex");
+                            int requesterGain = exchangeRequestReceived.get(3);
+                            int myGain = getFlexibleGain(exchangeRequestReceived.get(1), null);
+                            System.out.println(requesterGain+">"+myGain+", k:" + marginOfKindness);
+                            if(requesterGain-myGain>marginOfKindness) {
+                                exchangeRequestApproved = true;
+                                dailySocialCapitalExchanges++;
+                            } else {
+                                exchangeRequestApproved = false;
+                            }
                         } else {
                             exchangeRequestApproved = false;
                         }

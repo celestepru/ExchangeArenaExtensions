@@ -60,7 +60,10 @@ class Exchange {
                 a.setMadeInteraction(true);
                 if (!chosenAdvert.isEmpty()) {
                     // Select an unwanted time slot to offer in the exchange.
-                    ArrayList<Integer> unwantedTimeSlots = a.publishUnlockedTimeSlots();
+                    ArrayList<Integer> unwantedTimeSlots = a.publishUnsatisfiedTimeSlots();
+                    if(unwantedTimeSlots.isEmpty()) {
+                        break;
+                    }
                     int selector = ResourceExchangeArena.random.nextInt(unwantedTimeSlots.size());
                     int unwantedTimeSlot = unwantedTimeSlots.get(selector);
 
