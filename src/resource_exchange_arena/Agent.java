@@ -32,9 +32,10 @@ class Agent {
     private int dailyRejectedReceivedExchanges;
     private int dailyRejectedRequestedExchanges;
     private int dailyAcceptedRequestedExchanges;
-    private int flexibilityDistance;
 
     private boolean useFlexibility;
+
+    private int[] flexibilityCurve;
     private int marginOfKindness;
 
     /**
@@ -47,14 +48,14 @@ class Agent {
      * @param agents Array List of all the agents that exist in the current simulation.
      * @param socialCapital determines whether the agent uses socialCapital.
      */
-    Agent(int agentID, int agentType, int slotsPerAgent, ArrayList<Agent> agents, Mediator reputationSystem, boolean socialCapital, int flexibility, boolean useFlexibility, int marginOfKindness){
+    Agent(int agentID, int agentType, int slotsPerAgent, ArrayList<Agent> agents, Mediator reputationSystem, boolean socialCapital, boolean useFlexibility, int[] flexibilityCurve, int marginOfKindness){
         this.agentID = agentID;
         this.agentType = agentType;
         this.usesSocialCapital = socialCapital;
         this.reputationSystem = reputationSystem;
-        this.flexibilityDistance = flexibility;
         this.marginOfKindness = marginOfKindness;
         this.useFlexibility = useFlexibility;
+        this.flexibilityCurve = flexibilityCurve;
 
         madeInteraction = false;
         numberOfTimeSlotsWanted = slotsPerAgent;
@@ -363,8 +364,6 @@ class Agent {
             timeSlots = this.allocatedTimeSlots;
         }
         ArrayList<ArrayList<Integer>> satisfactionValues = new ArrayList<>();
-        Flexibility flex = new Flexibility(this.numberOfTimeSlotsWanted);
-        int[] flexibilityCurve = flex.getFlexibilityCurve();
         for(int t : timeSlots) {
             ArrayList<Integer> values = new ArrayList<>();
             int target = t;
@@ -569,7 +568,7 @@ class Agent {
                             // System.out.println("flex");
                             int requesterGain = exchangeRequestReceived.get(3);
                             int myGain = getFlexibleGain(exchangeRequestReceived.get(1), null);
-                            System.out.println(requesterGain+">"+myGain+", k:" + marginOfKindness);
+                            //System.out.println(requesterGain+">"+myGain+", k:" + marginOfKindness);
                             if(requesterGain-myGain>marginOfKindness) {
                                 exchangeRequestApproved = true;
                                 dailySocialCapitalExchanges++;

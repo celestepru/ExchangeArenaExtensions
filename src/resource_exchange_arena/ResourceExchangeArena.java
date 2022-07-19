@@ -38,7 +38,7 @@ public class ResourceExchangeArena extends UserParameters {
                 System.out.println("********** 2 / 2 ENVIRONMENT VERSIONS COMPLETE **********");
                 break;
             case 2:
-                /*
+
                 // As above but also test single agent type populations for reference.
                 USE_SOCIAL_CAPITAL = false;
                 SINGLE_AGENT_TYPE = true;
@@ -50,7 +50,7 @@ public class ResourceExchangeArena extends UserParameters {
                 SINGLE_AGENT_TYPE = true;
                 SELECTED_SINGLE_AGENT_TYPE = SOCIAL;
                 runSimulationSet();
-                System.out.println("********** 2 / 5 ENVIRONMENT VERSIONS COMPLETE **********");*/
+                System.out.println("********** 2 / 5 ENVIRONMENT VERSIONS COMPLETE **********");
 
                 USE_SOCIAL_CAPITAL = true;
                 SINGLE_AGENT_TYPE = true;
@@ -336,7 +336,6 @@ public class ResourceExchangeArena extends UserParameters {
                             DEMAND_CURVES,
                             AVAILABILITY_CURVE,
                             USE_SOCIAL_CAPITAL,
-                            FLEXIBILITY,
                             USE_FLEXIBILITY,
                             MARGIN_OF_KINDNESS,
                             SIMULATION_RUNS,
