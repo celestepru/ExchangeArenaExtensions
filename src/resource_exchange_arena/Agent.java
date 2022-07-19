@@ -20,6 +20,7 @@ class Agent {
     private ArrayList<ArrayList<Integer>> favoursGiven = new ArrayList<>();
     private ArrayList<Integer> exchangeRequestReceived = new ArrayList<>();
     private ArrayList<Integer> globalFavoursGiven = new ArrayList<>();
+    private ArrayList<ArrayList<Integer>> flexibleSatisfactionValues = new ArrayList<>();
     private Mediator reputationSystem;
     private boolean exchangeRequestApproved;
     private int totalSocialCapital;
@@ -28,6 +29,10 @@ class Agent {
     private int dailyRejectedReceivedExchanges;
     private int dailyRejectedRequestedExchanges;
     private int dailyAcceptedRequestedExchanges;
+    private int flexibilityDistance;
+
+    private boolean useFlexibility;
+    private int marginOfKindness;
 
     /**
      * Agents represent the individual consumers in the simulation.
@@ -39,11 +44,14 @@ class Agent {
      * @param agents Array List of all the agents that exist in the current simulation.
      * @param socialCapital determines whether the agent uses socialCapital.
      */
-    Agent(int agentID, int agentType, int slotsPerAgent, ArrayList<Agent> agents, Mediator reputationSystem, boolean socialCapital){
+    Agent(int agentID, int agentType, int slotsPerAgent, ArrayList<Agent> agents, Mediator reputationSystem, boolean socialCapital, int flexibility, boolean useFlexibility, int marginOfKindness){
         this.agentID = agentID;
         this.agentType = agentType;
         this.usesSocialCapital = socialCapital;
         this.reputationSystem = reputationSystem;
+        this.flexibilityDistance = flexibility;
+        this.marginOfKindness = marginOfKindness;
+        this.useFlexibility = useFlexibility;
 
         madeInteraction = false;
         numberOfTimeSlotsWanted = slotsPerAgent;
@@ -67,6 +75,8 @@ class Agent {
     boolean usesSocialCapital() {
         return usesSocialCapital;
     }
+
+    boolean usesFlexibility() { return useFlexibility;}
 
     /**
      * Used to change an Agents type during a simulation.
@@ -129,6 +139,8 @@ class Agent {
     ArrayList<Integer> getExchangeRequestReceived() {
         return exchangeRequestReceived;
     }
+
+    ArrayList<ArrayList<Integer>> getFlexibleSatisfactionValues() { return flexibleSatisfactionValues;}
 
     /**
      * Setter for the currently received exchange request.
@@ -338,6 +350,40 @@ class Agent {
      */
     void receiveAllocatedTimeSlots(ArrayList<Integer> allocatedTimeSlots) {
         this.allocatedTimeSlots = allocatedTimeSlots;
+        if(useFlexibility && usesSocialCapital) {
+            createFlexibleSatisfactionValues();
+        }
+    }
+
+    void createFlexibleSatisfactionValues() {
+        if(!flexibleSatisfactionValues.isEmpty()) {
+            flexibleSatisfactionValues.clear();
+        }
+        Flexibility flex = new Flexibility(this.numberOfTimeSlotsWanted);
+        int[] flexibilityCurve = flex.getFlexibilityCurve();
+        for(int t : allocatedTimeSlots) {
+            ArrayList<Integer> values = new ArrayList<>();
+            int target = t;
+            int distance = Math.abs(requestedTimeSlots.get(0)-target);
+            int index = 0;
+            for(int c = 1; c<requestedTimeSlots.size(); c++) {
+                int cdistance = Math.abs(requestedTimeSlots.get(c)-target);
+                if(cdistance < distance) {
+                    index = c;
+                    distance = cdistance;
+                }
+            }
+            int closestSlot = allocatedTimeSlots.get(index);
+            if(flexibilityCurve.length<distance) {
+                values.add(closestSlot);
+                values.add(0);
+            } else {
+                int satisfaction = flexibilityCurve[distance];
+                values.add(closestSlot);
+                values.add(satisfaction);
+            }
+            flexibleSatisfactionValues.add(values);
+        }
     }
 
     /**
@@ -452,6 +498,7 @@ class Agent {
         // Create a new local list of time slots in order to test how the Agents satisfaction would change after the
         // potential exchange.
         ArrayList<Integer> potentialAllocatedTimeSlots = new ArrayList<>(allocatedTimeSlots);
+        //double currentSatisfaction = calculateSatisfaction(allocatedTimeSlots);
         // Check this Agent still has the time slot requested.
         if (potentialAllocatedTimeSlots.contains(exchangeRequestReceived.get(1))) {
             potentialAllocatedTimeSlots.remove(exchangeRequestReceived.get(1));
@@ -469,23 +516,8 @@ class Agent {
                 if (Double.compare(potentialSatisfaction, currentSatisfaction) > 0) {
                     exchangeRequestApproved = true;
                     dailyNoSocialCapitalExchanges++;
-                } else if (Double.compare(potentialSatisfaction, currentSatisfaction) == 0) {
+                } else if(Double.compare(potentialSatisfaction, currentSatisfaction) == 0){
                     if (usesSocialCapital) {
-                        int favoursOwedToRequester = 0;
-                        int favoursGivenToRequester = 0;
-                        for (ArrayList<Integer> favours : favoursOwed) {
-                            if (favours.get(0).equals(exchangeRequestReceived.get(0))) {
-                                favoursOwedToRequester = favours.get(1);
-                                break;
-                            }
-                        }
-                        for (ArrayList<Integer> favours : favoursGiven) {
-                            if (favours.get(0).equals(exchangeRequestReceived.get(0))) {
-                                favoursGivenToRequester = favours.get(1);
-                                break;
-                            }
-                        }
-                        //System.out.println("YE");
                         boolean isGood = this.reputationSystem.getAgentReputation(exchangeRequestReceived.get(0));
                         if (isGood) {
                             exchangeRequestApproved = true;
@@ -495,6 +527,37 @@ class Agent {
                         // When social capital isn't used, social agents always accept neutral exchanges.
                         exchangeRequestApproved = true;
                         dailyNoSocialCapitalExchanges++;
+                    }
+                } else if(Double.compare(potentialSatisfaction, currentSatisfaction) < 0){
+                    if(usesSocialCapital && useFlexibility) {
+                        System.out.println("flex");
+                        //Create flexibility curve
+                        //boolean isGood = this.reputationSystem.getAgentReputation(exchangeRequestReceived.get(0));
+                        Flexibility flexibility = new Flexibility(flexibilityDistance);
+                        int[] flexibilityCurve = flexibility.getFlexibilityCurve();
+                        //Find closest timeslot to proposed in my requested timeslots
+                        int target = exchangeRequestReceived.get(2);
+                        int distance = Math.abs(requestedTimeSlots.get(0)-target);
+                        int index = 0;
+                        for(int c = 1; c<requestedTimeSlots.size(); c++) {
+                            int cdistance = Math.abs(requestedTimeSlots.get(c)-target);
+                            if(cdistance < distance) {
+                                index = c;
+                                distance = cdistance;
+                            }
+                        }
+                        int closestSlot = requestedTimeSlots.get(index);
+                        if(flexibilityCurve.length<distance) {
+                            exchangeRequestApproved = false;
+                        } else {
+                            double satisfaction = flexibilityCurve[distance];
+                            if(satisfaction >= marginOfKindness) {
+                                exchangeRequestApproved = true;
+                                dailySocialCapitalExchanges++;
+                            }
+                        }
+                    } else {
+                        exchangeRequestApproved = false;
                     }
                 }
             } else {

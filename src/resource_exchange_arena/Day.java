@@ -50,6 +50,7 @@ public class Day {
             int totalAvailability,
             int day,
             int exchanges,
+            boolean useFlexibility,
             int populationSize,
             int uniqueTimeSlots,
             int slotsPerAgent,
@@ -139,6 +140,7 @@ public class Day {
                     daysOfInterest,
                     day,
                     exchange,
+                    useFlexibility,
                     uniqueAgentTypes,
                     agents,
                     endOfRoundAverageSatisfactions

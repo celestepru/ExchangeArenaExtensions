@@ -51,6 +51,13 @@ public abstract class UserParameters extends FixedParameters {
     // Specify whether social capital  should be used by the social agents.
     public static boolean USE_SOCIAL_CAPITAL = true;
 
+    //Specify the level of flexibility, in terms of hours of difference. A flexibility of 0 corresponds to binary satisfaction.
+    public static int FLEXIBILITY = 5;
+
+    public static boolean USE_FLEXIBILITY = true;
+
+    public static int MARGIN_OF_KINDNESS = 60;
+
     // Arrays of demand used by the agents, when multiple curves are used the agents are split equally between the curves.
     // The arrays should have 1 value for each 10 minute segment of the day.
     public static final double[][] DEMAND_CURVES = {{1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0}};
@@ -63,7 +70,7 @@ public abstract class UserParameters extends FixedParameters {
     // the following arrays. All possible combinations will be simulated.
     // ################################################################################################################
     // Number of exchange rounds per day.
-    public static final int[] EXCHANGES_ARRAY = {1,50,100,150,200};
+    public static final int[] EXCHANGES_ARRAY = {50,100,150,200};
     // Example: "{1,50,100,150,200};"
 
     // Percentage of agents that will evolve their strategy per day.

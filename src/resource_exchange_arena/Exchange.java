@@ -1,6 +1,7 @@
 package resource_exchange_arena;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.stream.IntStream;
@@ -25,6 +26,7 @@ class Exchange {
             int[] daysOfInterest,
             int day,
             int exchange,
+            boolean flexibility,
             ArrayList<Integer> uniqueAgentTypes,
             ArrayList<Agent> agents,
             ArrayList<ArrayList<Double>> endOfRoundAverageSatisfactions
@@ -39,8 +41,13 @@ class Exchange {
 
         // Exchanges start by Agents advertising time slots they may be willing to exchange.
         Collections.shuffle(agents, ResourceExchangeArena.random);
+        ArrayList<Integer> unlockedTimeSlots;
         for (Agent a : agents) {
-            ArrayList<Integer> unlockedTimeSlots = a.publishUnlockedTimeSlots();
+            if(!a.usesFlexibility()) {
+                unlockedTimeSlots = a.publishUnlockedTimeSlots();
+            } else {
+                unlockedTimeSlots = a.publishAllocatedTimeSlots();
+            }
             if (!unlockedTimeSlots.isEmpty()) {
                 ArrayList<Integer> advert = new ArrayList<>();
                 advert.add(a.agentID);
@@ -65,6 +72,15 @@ class Exchange {
                     request.add(a.agentID);
                     request.add(chosenAdvert.get(1));
                     request.add(unwantedTimeSlot);
+                    if(a.usesFlexibility()) {
+                        a.createFlexibleSatisfactionValues();
+                        for(ArrayList<Integer> values : a.getFlexibleSatisfactionValues()) {
+                            if(values.get(0) == unwantedTimeSlot) {
+                                request.add(values.get(1));
+                                break;
+                            }
+                        }
+                    }
 
                     // The agent who offered the requested time slot receives the exchange request.
                     for (Agent b : agents) {

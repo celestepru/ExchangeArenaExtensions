@@ -60,6 +60,9 @@ class SimulationRun {
             boolean singleAgentType,
             int selectedSingleAgentType,
             boolean socialCapital,
+            int flexibility,
+            boolean useFlexibility,
+            int marginOfKindness,
             ArrayList<ArrayList<Integer>>  socialCapitalTracking,
             ArrayList<ArrayList<Integer>>  exchangeTypeTracking,
             ArrayList<ArrayList<Integer>>  exchangeSuccessTracking,
@@ -96,7 +99,10 @@ class SimulationRun {
                         slotsPerAgent,
                         agents,
                         reputationSystem,
-                        socialCapital
+                        socialCapital,
+                        flexibility,
+                        useFlexibility,
+                        marginOfKindness
                 );
         }
         Collections.shuffle(agents, ResourceExchangeArena.random);
@@ -162,6 +168,7 @@ class SimulationRun {
                     totalAvailability,
                     day,
                     exchanges,
+                    useFlexibility,
                     populationSize,
                     uniqueTimeSlots,
                     slotsPerAgent,
