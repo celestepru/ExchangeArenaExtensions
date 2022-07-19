@@ -43,11 +43,7 @@ class Exchange {
         Collections.shuffle(agents, ResourceExchangeArena.random);
         ArrayList<Integer> unlockedTimeSlots;
         for (Agent a : agents) {
-            if(!a.usesFlexibility()) {
-                unlockedTimeSlots = a.publishUnlockedTimeSlots();
-            } else {
-                unlockedTimeSlots = a.publishAllocatedTimeSlots();
-            }
+            unlockedTimeSlots = a.publishUnlockedTimeSlots();
             if (!unlockedTimeSlots.isEmpty()) {
                 ArrayList<Integer> advert = new ArrayList<>();
                 advert.add(a.agentID);
@@ -72,14 +68,15 @@ class Exchange {
                     request.add(a.agentID);
                     request.add(chosenAdvert.get(1));
                     request.add(unwantedTimeSlot);
-                    if(a.usesFlexibility()) {
-                        a.createFlexibleSatisfactionValues();
+                    if(a.usesFlexibility() && a.usesSocialCapital()) {
                         for(ArrayList<Integer> values : a.getFlexibleSatisfactionValues()) {
                             if(values.get(0) == unwantedTimeSlot) {
                                 request.add(values.get(1));
                                 break;
                             }
                         }
+                    } else {
+                         request.add(100);
                     }
 
                     // The agent who offered the requested time slot receives the exchange request.
