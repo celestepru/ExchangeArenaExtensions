@@ -22,18 +22,15 @@ public class Flexibility {
         }
         //Increment to include 0 in case of exceeding limit
         maxDistance++;
+       // System.out.println("mx" + maxDistance);
         flexibilityCurve = new int[maxDistance];
 
         //Calculate value to decrement from maxValue each time. This allows an even spread of values
-        int decrement = maxValue/maxDistance;
+        int decrement = maxValue/(maxDistance-1);
 
         //populate the curve
         for(int i = 0; i<flexibilityCurve.length; i++) {
-            if(i==flexibilityCurve.length-1) {
-                flexibilityCurve[i] = minValue;
-            } else {
-                flexibilityCurve[i] = maxValue-(decrement*i);
-            }
+            flexibilityCurve[i] = maxValue-(decrement*i);
         }
     }
     int[] getFlexibilityCurve() {

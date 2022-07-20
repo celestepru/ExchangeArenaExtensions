@@ -28,6 +28,7 @@ public class ResourceExchangeArena extends UserParameters {
     public static void main(String[] args) throws IOException {
         switch (COMPARISON_LEVEL) {
             case 1:
+                /*
                 // Test user parameters with and without social capital for comparison.
                 USE_SOCIAL_CAPITAL = false;
                 runSimulationSet();
@@ -62,6 +63,8 @@ public class ResourceExchangeArena extends UserParameters {
                 SINGLE_AGENT_TYPE = false;
                 runSimulationSet();
                 System.out.println("********** 4 / 5 ENVIRONMENT VERSIONS COMPLETE **********");
+
+                 */
 
                 USE_SOCIAL_CAPITAL = true;
                 SINGLE_AGENT_TYPE = false;

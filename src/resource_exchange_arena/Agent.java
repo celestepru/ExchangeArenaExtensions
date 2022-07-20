@@ -561,15 +561,30 @@ class Agent {
                     }
                 } else if(Double.compare(potentialSatisfaction, currentSatisfaction) < 0){
                     if(usesSocialCapital && useFlexibility) {
+                      /*  ArrayList<ArrayList<Integer>> values = createFlexibleSatisfactionValues(allocatedTimeSlots);
+                        for(ArrayList<Integer> v : values) {
+                            System.out.println(v.get(0) + ", " + v.get(1));
+                        }*/
                         boolean isGood = this.reputationSystem.getAgentReputation(exchangeRequestReceived.get(0));
                         if(isGood) {
                             // System.out.println("Ye");
                             //createFlexibleSatisfactionValues();
                             // System.out.println("flex");
                             int requesterGain = exchangeRequestReceived.get(3);
-                            int myGain = getFlexibleGain(exchangeRequestReceived.get(1), null);
-                            //System.out.println(requesterGain+">"+myGain+", k:" + marginOfKindness);
-                            if(requesterGain-myGain>marginOfKindness) {
+                            int myPotentialGain = getFlexibleGain(exchangeRequestReceived.get(1), allocatedTimeSlots);
+                           // System.out.println(requesterGain+">"+myGain);
+                            if(requesterGain-myPotentialGain>marginOfKindness) {
+                                System.out.println("\n"+requesterGain+">"+myPotentialGain);
+                                System.out.println("Requested:");
+                                for(int i : requestedTimeSlots) {
+                                    System.out.println(i);
+                                }
+                                System.out.println("\nReceived:");
+                                    for(int i : allocatedTimeSlots) {
+                                        System.out.println(i);
+                                    }
+                                System.out.println("Slot requested: "+exchangeRequestReceived.get(1));
+                               // System.out.println(requesterGain+">"+myGain);
                                 exchangeRequestApproved = true;
                                 dailySocialCapitalExchanges++;
                             } else {
@@ -620,29 +635,20 @@ class Agent {
     boolean completeRequestedExchange(ArrayList<Integer> offer, int agentID, int partnersAgentType) {
         boolean SCGain = false;
 
-        double previousSatisfaction = calculateSatisfaction(allocatedTimeSlots);
+        double previousSatisfaction = calculateSatisfaction2(allocatedTimeSlots);
         // Update the Agents allocated time slots.
         allocatedTimeSlots.remove(offer.get(2));
         allocatedTimeSlots.add(offer.get(1));
 
-        double newSatisfaction = calculateSatisfaction(allocatedTimeSlots);
+        double newSatisfaction = calculateSatisfaction2(allocatedTimeSlots);
 
         // Update the Agents relationship with the other Agent involved in the exchange.
         if (usesSocialCapital) {
-            this.flexibleSatisfactionValues = createFlexibleSatisfactionValues(null);
             // if (Double.compare(newSatisfaction, previousSatisfaction) > 0
             //         && agentType == ResourceExchangeArena.SOCIAL && partnersAgentType == ResourceExchangeArena.SOCIAL) {
             if (Double.compare(newSatisfaction, previousSatisfaction) > 0
                     && agentType == ResourceExchangeArena.SOCIAL) {
-
-                for (ArrayList<Integer> favours : favoursOwed) {
-                    if (favours.get(0).equals(agentID)) {
-                        int currentFavour = favours.get(1);
-                        favours.set(1, currentFavour + 1);
-                        this.reputationSystem.updateFavoursOwed(agentID, 1);
-                        break;
-                    }
-                }
+                    this.reputationSystem.updateFavoursOwed(agentID, 1);
                 SCGain = true;
             }
         }
@@ -660,30 +666,23 @@ class Agent {
     boolean completeReceivedExchange(ArrayList<Integer> offer, int partnersAgentType) {
         boolean SCLoss = false;
 
-        double previousSatisfaction = calculateSatisfaction(allocatedTimeSlots);
+        double previousSatisfaction = calculateSatisfaction2(allocatedTimeSlots);
         // Update the Agents allocated time slots.
         allocatedTimeSlots.remove(offer.get(1));
         allocatedTimeSlots.add(offer.get(2));
-        double newSatisfaction = calculateSatisfaction(allocatedTimeSlots);
+        double newSatisfaction = calculateSatisfaction2(allocatedTimeSlots);
 
         // Update the Agents relationship with the other Agent involved in the exchange.
         if (usesSocialCapital) {
-            this.flexibleSatisfactionValues = createFlexibleSatisfactionValues(null);
             // if (Double.compare(newSatisfaction, previousSatisfaction) <= 0
             //         && agentType == ResourceExchangeArena.SOCIAL && partnersAgentType == ResourceExchangeArena.SOCIAL) {
-
-            if (Double.compare(newSatisfaction, previousSatisfaction) <= 0
+            if (Double.compare(newSatisfaction, previousSatisfaction) == 0
                     && agentType == ResourceExchangeArena.SOCIAL) {
-
-                for (ArrayList<Integer> favours : favoursGiven) {
-                    if (favours.get(0).equals(offer.get(0))) {
-                        int currentFavour = favours.get(1);
-                        favours.set(1, currentFavour + 1);
-                        this.reputationSystem.updateFavoursGiven(offer.get(0), 1);
-                        break;
-                    }
-                }
+                    this.reputationSystem.updateFavoursGiven(offer.get(0), 1);
                 SCLoss = true;
+            } else if(Double.compare(newSatisfaction, previousSatisfaction) < 0
+                        && agentType == ResourceExchangeArena.SOCIAL) {
+                this.reputationSystem.updateFavoursGiven(offer.get(0), 2);
             }
         }
         return SCLoss;
@@ -723,7 +722,7 @@ class Agent {
         for(ArrayList<Integer> values : flexibleSatValues) {
             individualSlotsSatisfaction = individualSlotsSatisfaction+values.get(1);
         }
-        int average = individualSlotsSatisfaction/numberOfTimeSlotsWanted;
+        double average = (double)individualSlotsSatisfaction/(double)numberOfTimeSlotsWanted;
         double satisfaction = average/100D;
         return satisfaction;
     }

@@ -45,10 +45,11 @@ public class ReputationSystem implements Mediator{
         for(ArrayList<Integer> owed : globalFavoursOwed) {
             if(owed.get(0) == agentID) {
                 favoursOwed = owed.get(1);
+                break;
             }
         }
         if(favoursOwed > favoursGiven) {
-            //System.out.println(favoursOwed  +">" + favoursGiven);
+           // System.out.println(favoursOwed  +">" + favoursGiven);
             return true;
         }
         return false;
@@ -73,4 +74,24 @@ public class ReputationSystem implements Mediator{
             }
         }
     }
+
+    @Override
+    public int getFavoursOwed(int agentID) {
+        for(ArrayList<Integer> rep : globalFavoursOwed) {
+            if(rep.get(0) == agentID) {
+                return rep.get(1);
+            }
+        }
+        return 0;
+    }
+    @Override
+    public int getFavoursGiven(int agentID) {
+        for(ArrayList<Integer> rep : globalFavoursGiven) {
+            if(rep.get(0) == agentID) {
+                return rep.get(1);
+            }
+        }
+        return 0;
+    }
+
 }
