@@ -60,7 +60,7 @@ class Exchange {
                 a.setMadeInteraction(true);
                 if (!chosenAdvert.isEmpty()) {
                     // Select an unwanted time slot to offer in the exchange.
-                    ArrayList<Integer> unwantedTimeSlots = a.publishUnsatisfiedTimeSlots();
+                    ArrayList<Integer> unwantedTimeSlots = a.publishUnlockedTimeSlots();
                     if(unwantedTimeSlots.isEmpty()) {
                         break;
                     }
@@ -152,7 +152,8 @@ class Exchange {
                 endOfRoundAverageSatisfaction.add((double) exchange);
                 endOfRoundAverageSatisfaction.add((double) uniqueAgentType);
                 endOfRoundAverageSatisfaction.add(averageSatisfactionForType);
-
+                System.out.println(day + ", " + exchange);
+                System.out.println(uniqueAgentType + " " + averageSatisfactionForType+"\n");
                 endOfRoundAverageSatisfactions.add(endOfRoundAverageSatisfaction);
             }
         }

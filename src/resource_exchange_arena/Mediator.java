@@ -9,5 +9,6 @@ public interface Mediator {
     int getFavoursGiven(int agentID);
     int getFavoursOwed(int agentID);
 
+    int getAgentType(int agentID);
 
 }

@@ -17,7 +17,7 @@ class CalculateSatisfaction {
     static double averageAgentSatisfaction(ArrayList<Agent> agents) {
         ArrayList<Double> agentSatisfactions = new ArrayList<>();
         for (Agent a : agents) {
-            agentSatisfactions.add(a.calculateSatisfaction(null));
+            agentSatisfactions.add(a.calculateStandardSatisfaction(null));
         }
         return agentSatisfactions.stream().mapToDouble(val -> val).average().orElse(0.0);
     }
@@ -34,7 +34,7 @@ class CalculateSatisfaction {
         ArrayList<Double> agentSatisfactions = new ArrayList<>();
         for (Agent a : agents) {
             if (a.getAgentType() == agentType) {
-                agentSatisfactions.add(a.calculateSatisfaction(null));
+                agentSatisfactions.add(a.calculateStandardSatisfaction(null));
             }
         }
         return agentSatisfactions.stream().mapToDouble(val -> val).average().orElse(0.0);
@@ -55,7 +55,7 @@ class CalculateSatisfaction {
         int groupSize = 0;
         for (Agent a : agents) {
             if (a.getAgentType() == agentType) {
-                double diff = a.calculateSatisfaction(null) - averageSatisfaction;
+                double diff = a.calculateStandardSatisfaction(null) - averageSatisfaction;
                 diff *= diff;
                 sumDiffsSquared += diff;
                 groupSize++;
@@ -82,7 +82,7 @@ class CalculateSatisfaction {
         ArrayList<Double> agentSatisfactions = new ArrayList<>();
         for (Agent a : agents) {
             if (a.getAgentType() == agentType) {
-                agentSatisfactions.add(a.calculateSatisfaction(null));
+                agentSatisfactions.add(a.calculateStandardSatisfaction(null));
             }
         }
         Collections.sort(agentSatisfactions);

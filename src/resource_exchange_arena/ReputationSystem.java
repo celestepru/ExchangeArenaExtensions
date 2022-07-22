@@ -49,7 +49,6 @@ public class ReputationSystem implements Mediator{
             }
         }
         if(favoursOwed > favoursGiven) {
-           // System.out.println(favoursOwed  +">" + favoursGiven);
             return true;
         }
         return false;
@@ -92,6 +91,16 @@ public class ReputationSystem implements Mediator{
             }
         }
         return 0;
+    }
+
+    public int getAgentType(int agentID) {
+        int agentType = 0;
+        for(Agent a : agents) {
+            if(a.agentID == agentID) {
+                agentType = a.getAgentType();
+            }
+        }
+        return agentType;
     }
 
 }

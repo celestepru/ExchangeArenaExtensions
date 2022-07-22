@@ -61,6 +61,7 @@ class SimulationRun {
             int selectedSingleAgentType,
             boolean socialCapital,
             boolean useFlexibility,
+            int flexibility,
             int marginOfKindness,
             ArrayList<ArrayList<Integer>>  socialCapitalTracking,
             ArrayList<ArrayList<Integer>>  exchangeTypeTracking,
@@ -79,8 +80,8 @@ class SimulationRun {
         //Global reputation system
         Mediator reputationSystem = new ReputationSystem();
 
-        Flexibility flexibility = new Flexibility(slotsPerAgent);
-        int[] flexibilityCurve = flexibility.getFlexibilityCurve();
+        Flexibility flexibilityObject = new Flexibility(flexibility);
+        int[] flexibilityCurve = flexibilityObject.getFlexibilityCurve();
 
         // Create the Agents for the simulation.
         for (int agentNumber = 1; agentNumber <= populationSize; agentNumber++) {
