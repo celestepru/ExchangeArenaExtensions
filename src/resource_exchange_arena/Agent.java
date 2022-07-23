@@ -10,7 +10,6 @@ import java.util.Random;
 class Agent {
     // Unique identifier for the agent.
     int agentID;
-    private int maxGain = 100;
 
     // Instance variables to store the agents state, relations and ongoing exchanges.
     private int agentType;
@@ -435,7 +434,7 @@ class Agent {
         if(useFlexibility && usesSocialCapital) {
             ArrayList<ArrayList<Integer>> values = createFlexibleSatisfactionValues(allocatedTimeSlots);
             for(ArrayList<Integer> v : values) {
-                if(v.get(1)<maxGain) {
+                if(v.get(1)<ResourceExchangeArena.MAX_GAIN) {
                     targetTimeSlots.add(v.get(0));
                 }
             }
@@ -701,14 +700,13 @@ class Agent {
         if(slots == null) {
             slots = this.allocatedTimeSlots;
         }
-        int maxSat = numberOfTimeSlotsWanted*maxGain;
+        int maxSat = numberOfTimeSlotsWanted*ResourceExchangeArena.MAX_GAIN;
         ArrayList<ArrayList<Integer>> flexibleSatValues = createFlexibleSatisfactionValues(slots);
         int individualSlotsSatisfaction = 0;
         for(ArrayList<Integer> values : flexibleSatValues) {
             individualSlotsSatisfaction = individualSlotsSatisfaction+values.get(1);
         }
-        double average = ((double)individualSlotsSatisfaction*(double)maxGain)/(double)maxSat;
-        double satisfaction = average/100D;
+        double satisfaction = ((double)individualSlotsSatisfaction)/(double)maxSat;
         return satisfaction;
     }
 }

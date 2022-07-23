@@ -9,6 +9,8 @@ public abstract class FixedParameters {
     // Constants representing the available agent types for the simulation.
     public static final int SELFISH = 1;
     public static final int SOCIAL = 2;
+
+    public static final int MAX_GAIN = 100;
     public static final int[] ALL_AGENT_TYPES = {SELFISH, SOCIAL};
 
     // Constant parameters for all simulations, this version of the system is not designed for these to be modified.
