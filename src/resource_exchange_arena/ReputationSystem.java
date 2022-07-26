@@ -54,6 +54,29 @@ public class ReputationSystem implements Mediator{
         return false;
     }
 
+    public boolean getAgentReputationWithMargin(int agentID) {
+        int favoursGiven = 0;
+        int favoursOwed = 0;
+        for(ArrayList<Integer> given : globalFavoursGiven) {
+            if(given.get(0) == agentID) {
+                favoursGiven = given.get(1);
+                break;
+            }
+        }
+        for(ArrayList<Integer> owed : globalFavoursOwed) {
+            if(owed.get(0) == agentID) {
+                favoursOwed = owed.get(1);
+                break;
+            }
+        }
+        if(favoursOwed>favoursGiven) {
+            if(favoursOwed-favoursGiven>25) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     public void updateFavoursOwed(int agentID, int update) {
         for(ArrayList<Integer> rep : globalFavoursOwed) {

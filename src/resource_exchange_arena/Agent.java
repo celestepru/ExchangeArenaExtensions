@@ -37,6 +37,8 @@ class Agent {
     private int[] flexibilityCurve;
     private int marginOfKindness;
 
+    private int maxDistance = 5;
+
     /**
      * Agents represent the individual consumers in the simulation.
      *
@@ -378,6 +380,7 @@ class Agent {
                 int satisfaction = flexibilityCurve[distance];
                 values.add(target);
                 values.add(satisfaction);
+                System.out.println(satisfaction);
             } else {
                 values.add(target);
                 values.add(0);
@@ -564,13 +567,26 @@ class Agent {
                     }
                 } else if(Double.compare(potentialSatisfaction, currentSatisfaction) < 0){
                     if(usesSocialCapital && useFlexibility) {
-                        boolean isGood = this.reputationSystem.getAgentReputation(exchangeRequestReceived.get(0));
+                        boolean isGood = this.reputationSystem.getAgentReputationWithMargin(exchangeRequestReceived.get(0));
                         if(isGood) {
                             int requesterGain = exchangeRequestReceived.get(3);
                             int myGain = getFlexibleGain(exchangeRequestReceived.get(1), allocatedTimeSlots);
-                            if(requesterGain-myGain>marginOfKindness) {
-                                exchangeRequestApproved = true;
-                                dailySocialCapitalExchanges++;
+                            if(requesterGain-myGain>=marginOfKindness) {
+                                int potentialGain = getFlexibleGain(exchangeRequestReceived.get(2), potentialAllocatedTimeSlots);
+                                if(potentialGain>=marginOfKindness) {
+                                    System.out.println("SUCCESS");
+                                    System.out.println("\n");
+                                    System.out.println("Req gain: " + requesterGain);
+                                    System.out.println("My gain: " + myGain);
+                                    System.out.println("favours given: " + this.reputationSystem.getFavoursGiven(exchangeRequestReceived.get(0)));
+                                    System.out.println("favours owed: " + this.reputationSystem.getFavoursOwed(exchangeRequestReceived.get(0)));
+                                    if(exchangeRequestReceived.get(4) == ResourceExchangeArena.SELFISH) {
+                                        System.out.println("SELFISH");
+                                        System.out.println("\n");
+                                    }
+                                    exchangeRequestApproved = true;
+                                    dailySocialCapitalExchanges++;
+                                }
                             } else {
                                 exchangeRequestApproved = false;
                             }
@@ -631,7 +647,6 @@ class Agent {
             if (Double.compare(newSatisfaction, previousSatisfaction) > 0
                     && agentType == ResourceExchangeArena.SOCIAL) {
                     this.reputationSystem.updateFavoursOwed(agentID, 1);
-                   // System.out.println(agentID + "ow: " + this.reputationSystem.getFavoursOwed(agentID));
                 SCGain = true;
             }
         }

@@ -78,6 +78,7 @@ class Exchange {
                     } else {
                          request.add(100);
                     }
+                    request.add(a.getAgentType());
 
                     // The agent who offered the requested time slot receives the exchange request.
                     for (Agent b : agents) {
@@ -152,8 +153,6 @@ class Exchange {
                 endOfRoundAverageSatisfaction.add((double) exchange);
                 endOfRoundAverageSatisfaction.add((double) uniqueAgentType);
                 endOfRoundAverageSatisfaction.add(averageSatisfactionForType);
-                System.out.println(day + ", " + exchange);
-                System.out.println(uniqueAgentType + " " + averageSatisfactionForType+"\n");
                 endOfRoundAverageSatisfactions.add(endOfRoundAverageSatisfaction);
             }
         }

@@ -53,8 +53,10 @@ public abstract class UserParameters extends FixedParameters {
 
     public static boolean USE_FLEXIBILITY = true;
 
-    public static int FLEXIBILITY = 4;
-    public static int MARGIN_OF_KINDNESS = 45;
+    public static int FLEXIBILITY = 2;
+
+    public static int MAX_DISTANCE = 4;
+    public static int MARGIN_OF_KINDNESS = MAX_GAIN/2;  //maxGain/2
 
     // Arrays of demand used by the agents, when multiple curves are used the agents are split equally between the curves.
     // The arrays should have 1 value for each 10 minute segment of the day.
@@ -68,12 +70,12 @@ public abstract class UserParameters extends FixedParameters {
     // the following arrays. All possible combinations will be simulated.
     // ################################################################################################################
     // Number of exchange rounds per day.
-    public static final int[] EXCHANGES_ARRAY = {1,50,100};
+    public static final int[] EXCHANGES_ARRAY = {1,50,150,200};
     // Example: "{1,50,100,150,200};"
 
     // Percentage of agents that will evolve their strategy per day.
     // CURRENTLY MUST HAVE MORE THAN 1 VALUE
-    public static final int[] PERCENTAGE_OF_AGENTS_TO_EVOLVE_ARRAY = {0, 20};
+    public static final int[] PERCENTAGE_OF_AGENTS_TO_EVOLVE_ARRAY = {0, 50};
     // Example: "{0,50,100}" {0, 10, 25, 50,100}
 
     // Ratio of starting agent types, i.e. {SELFISH, SELFISH, SOCIAL} would cause the simulation to start with two

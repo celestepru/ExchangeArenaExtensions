@@ -62,6 +62,7 @@ class SimulationRun {
             boolean socialCapital,
             boolean useFlexibility,
             int flexibility,
+            int maxDistance,
             int marginOfKindness,
             ArrayList<ArrayList<Integer>>  socialCapitalTracking,
             ArrayList<ArrayList<Integer>>  exchangeTypeTracking,
@@ -80,7 +81,7 @@ class SimulationRun {
         //Global reputation system
         Mediator reputationSystem = new ReputationSystem();
 
-        Flexibility flexibilityObject = new Flexibility(flexibility);
+        Flexibility flexibilityObject = new Flexibility(flexibility, maxDistance);
         int[] flexibilityCurve = flexibilityObject.getFlexibilityCurve();
 
         // Create the Agents for the simulation.
@@ -128,7 +129,7 @@ class SimulationRun {
 
         // Run the simulation for a pre-determined number of days.
         for (int day = 1; day <= days; day++) {
-
+            System.out.print("Day: " + day);
             /*
              * Each Simulation run with the same parameters runs as an isolated instance although data is recorded in a
              * single location.
