@@ -72,9 +72,8 @@ class Exchange {
                     request.add(chosenAdvert.get(1));
                     request.add(unwantedTimeSlot);
                     if(a.usesFlexibility() && a.usesSocialCapital()) {
-                        ArrayList<Integer> potentialAllocatedTimeSlots = new ArrayList<>(a.publishAllocatedTimeSlots());
-                        potentialAllocatedTimeSlots.add(chosenAdvert.get(1));
-                        request.add(a.getFlexibleGain(chosenAdvert.get(1), potentialAllocatedTimeSlots));
+                        //System.out.println("GAINNN:"+a.getFlexibleGain(chosenAdvert.get(1)));
+                        request.add(a.getFlexibleGain(chosenAdvert.get(1)));
                     } else {
                          request.add(100);
                     }

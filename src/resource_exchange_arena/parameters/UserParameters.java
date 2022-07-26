@@ -75,7 +75,7 @@ public abstract class UserParameters extends FixedParameters {
 
     // Percentage of agents that will evolve their strategy per day.
     // CURRENTLY MUST HAVE MORE THAN 1 VALUE
-    public static final int[] PERCENTAGE_OF_AGENTS_TO_EVOLVE_ARRAY = {0, 50};
+    public static final int[] PERCENTAGE_OF_AGENTS_TO_EVOLVE_ARRAY = {100};
     // Example: "{0,50,100}" {0, 10, 25, 50,100}
 
     // Ratio of starting agent types, i.e. {SELFISH, SELFISH, SOCIAL} would cause the simulation to start with two

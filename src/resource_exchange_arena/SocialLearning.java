@@ -21,7 +21,7 @@ class SocialLearning {
         double[][] previousPerformances = new double[totalAgents][3];
         for(Agent a: agents) {
             double type = (double) a.getAgentType();
-            double sat = a.calculateSatisfaction(null);
+            double sat = a.calculateStandardSatisfaction(null);
 
             previousPerformances[a.agentID-1][0] = type;
             previousPerformances[a.agentID-1][1] = sat;
@@ -62,7 +62,7 @@ class SocialLearning {
 
             // Copy the observed agents strategy if it is better than its own, with likelihood dependent on the
             // difference between the agents satisfaction and the observed satisfaction.
-            double learningAgentSatisfaction = learningAgent.calculateSatisfaction(null);
+            double learningAgentSatisfaction = learningAgent.calculateStandardSatisfaction(null);
             double observedAgentSatisfaction = previousPerformances[observedPerformance][1];
             if (Math.round(learningAgentSatisfaction * slotsPerAgent) < Math.round(observedAgentSatisfaction * slotsPerAgent)) {
                 double difference = observedAgentSatisfaction - learningAgentSatisfaction;

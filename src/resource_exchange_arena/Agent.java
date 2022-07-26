@@ -376,7 +376,19 @@ class Agent {
                     distance = cdistance;
                 }
             }
-            if(flexibilityCurve.length>distance) {
+            values.add(target);
+            if(distance>=maxDistance) {
+                values.add(0);
+            } else if(distance<maxDistance && distance>0) {
+                values.add(50);
+            } else if(distance==0) {
+                values.add(100);
+            } else {
+                System.out.println("a");
+                values.add(0);
+            }
+
+           /* if(flexibilityCurve.length>distance) {
                 int satisfaction = flexibilityCurve[distance];
                 values.add(target);
                 values.add(satisfaction);
@@ -384,8 +396,11 @@ class Agent {
             } else {
                 values.add(target);
                 values.add(0);
-            }
+            }*/
             satisfactionValues.add(values);
+        }
+        if(satisfactionValues.isEmpty()) {
+            System.out.println("OU");
         }
         return satisfactionValues;
     }
@@ -401,6 +416,40 @@ class Agent {
         }
         return gain;
     }
+
+
+    int getFlexibleGain(int slot) {
+            int target = slot;
+            int gain;
+            int distance = Math.abs(requestedTimeSlots.get(0)-target);
+            int rSlot = 0;
+            for(int c = 1; c<requestedTimeSlots.size(); c++) {
+                int cdistance = Math.abs(requestedTimeSlots.get(c)-target);
+                if(cdistance < distance) {
+                    distance = cdistance;
+                    rSlot = requestedTimeSlots.get(c);
+                }
+            }
+           // System.out.println("\nReceived slot: " + slot);
+          //  System.out.println("Closest slot: " + rSlot);
+            if(slot<rSlot) {
+                distance = rSlot-slot;
+            } else {
+                distance = slot-rSlot;
+            }
+           // System.out.println("DISTAN " + distance);
+            if(distance>=maxDistance) {
+                gain = 0;
+            } else if(distance<maxDistance && distance>0) {
+                gain = 50;
+            } else if(distance==0) {
+                gain = 100;
+            } else {
+                gain = 0;
+            }
+            return gain;
+    }
+
 
     /**
      * Getter method for retrieving the time slots that the Agent is currently allocated.
@@ -555,7 +604,7 @@ class Agent {
                     dailyNoSocialCapitalExchanges++;
                 } else if(Double.compare(potentialSatisfaction, currentSatisfaction) == 0){
                     if (usesSocialCapital) {
-                        boolean isGood = this.reputationSystem.getAgentReputation(exchangeRequestReceived.get(0));
+                        boolean isGood = this.reputationSystem.getAgentReputationWithMargin(exchangeRequestReceived.get(0));
                         if (isGood) {
                             exchangeRequestApproved= true;
                             dailySocialCapitalExchanges++;
@@ -569,11 +618,16 @@ class Agent {
                     if(usesSocialCapital && useFlexibility) {
                         boolean isGood = this.reputationSystem.getAgentReputationWithMargin(exchangeRequestReceived.get(0));
                         if(isGood) {
+                           /* System.out.println("\npotsat = " + potentialSatisfaction);
+                            System.out.println("currentsat = " + currentSatisfaction);*/
                             int requesterGain = exchangeRequestReceived.get(3);
-                            int myGain = getFlexibleGain(exchangeRequestReceived.get(1), allocatedTimeSlots);
-                            if(requesterGain-myGain>=marginOfKindness) {
-                                int potentialGain = getFlexibleGain(exchangeRequestReceived.get(2), potentialAllocatedTimeSlots);
-                                if(potentialGain>=marginOfKindness) {
+                            int myGain = getFlexibleGain(exchangeRequestReceived.get(1));
+                            //System.out.println("ReqGain: " +requesterGain);
+                            //System.out.println("MyGain: " + myGain);
+                            if(requesterGain-myGain>=marginOfKindness && currentSatisfaction-potentialSatisfaction<0.2) {
+                                int potentialGain = getFlexibleGain(exchangeRequestReceived.get(2));
+                                /*
+                                System.out.println("Pgain: " + potentialGain);
                                     System.out.println("SUCCESS");
                                     System.out.println("\n");
                                     System.out.println("Req gain: " + requesterGain);
@@ -583,10 +637,10 @@ class Agent {
                                     if(exchangeRequestReceived.get(4) == ResourceExchangeArena.SELFISH) {
                                         System.out.println("SELFISH");
                                         System.out.println("\n");
-                                    }
+                                    }*/
                                     exchangeRequestApproved = true;
                                     dailySocialCapitalExchanges++;
-                                }
+
                             } else {
                                 exchangeRequestApproved = false;
                             }
@@ -716,10 +770,9 @@ class Agent {
             slots = this.allocatedTimeSlots;
         }
         int maxSat = numberOfTimeSlotsWanted*ResourceExchangeArena.MAX_GAIN;
-        ArrayList<ArrayList<Integer>> flexibleSatValues = createFlexibleSatisfactionValues(slots);
         int individualSlotsSatisfaction = 0;
-        for(ArrayList<Integer> values : flexibleSatValues) {
-            individualSlotsSatisfaction = individualSlotsSatisfaction+values.get(1);
+        for(int t : slots) {
+            individualSlotsSatisfaction = individualSlotsSatisfaction+getFlexibleGain(t);
         }
         double satisfaction = ((double)individualSlotsSatisfaction)/(double)maxSat;
         return satisfaction;

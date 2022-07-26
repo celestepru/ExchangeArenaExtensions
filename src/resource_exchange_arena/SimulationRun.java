@@ -129,7 +129,7 @@ class SimulationRun {
 
         // Run the simulation for a pre-determined number of days.
         for (int day = 1; day <= days; day++) {
-            System.out.print("Day: " + day);
+          //  System.out.print("Day: " + day);
             /*
              * Each Simulation run with the same parameters runs as an isolated instance although data is recorded in a
              * single location.

@@ -120,7 +120,7 @@ public class Day {
         // A pre-determined number of pairwise exchanges take place, during each exchange all agents have a chance to
         // trade with another agent.
         for (int exchange = 1; exchange <= exchanges; exchange++) {
-            System.out.println("Exchange: " + exchange);
+         //   System.out.println("Exchange: " + exchange);
             /*
              * With each exchange all agents form pairwise exchanges and are able to consider a trade with their
              * partner for one time slot.
