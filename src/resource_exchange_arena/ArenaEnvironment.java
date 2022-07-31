@@ -23,7 +23,7 @@ public class ArenaEnvironment {
      *
      * @param folderName String representing the output destination folder, used to organise output data.
      * @param environmentTag String detailing specifics about the simulation environment.
-     * @param daysOfInterest Integer array containing the days be shown in graphs produced after the simulation.
+     * @param daysOfInterest Integer array containing the days be shown in graphs produced after the simulat ion.
      * @param demandCurves Double arrays of demand used by the agents, when multiple curves are used the agents are
      *                     split equally between the curves.
      * @param availabilityCurve Integer array of energy availability used by the simulation.
@@ -167,6 +167,8 @@ public class ArenaEnvironment {
         exchangeTypeDataCSVWriter.append("Social Capital Exchanges");
         exchangeTypeDataCSVWriter.append(",");
         exchangeTypeDataCSVWriter.append("No Social Capital Exchanges");
+        exchangeTypeDataCSVWriter.append(",");
+        exchangeTypeDataCSVWriter.append("Altruistic Exchanges");
         exchangeTypeDataCSVWriter.append("\n");
 
         // Stores the amount of exchange requests that were considered and accepted and considered and rejected.
@@ -541,6 +543,7 @@ public class ArenaEnvironment {
 
                 ArrayList<Integer> socialCapitalExchanges = new ArrayList<>();
                 ArrayList<Integer> noSocialCapitalExchanges = new ArrayList<>();
+                ArrayList<Integer> altruisticExchanges = new ArrayList<>();
                 for (ArrayList<Integer> ett : exchangeTypeTracking) {
                     if ((ett.get(0) == day) && (ett.get(1) == agentType)) {
                         exchangeTypeDataCSVWriter.append(String.valueOf(day));
@@ -550,15 +553,24 @@ public class ArenaEnvironment {
                         exchangeTypeDataCSVWriter.append(String.valueOf(ett.get(2)));
                         exchangeTypeDataCSVWriter.append(",");
                         exchangeTypeDataCSVWriter.append(String.valueOf(ett.get(3)));
+                        exchangeTypeDataCSVWriter.append(",");
+                        exchangeTypeDataCSVWriter.append(String.valueOf(ett.get(4)));
                         exchangeTypeDataCSVWriter.append("\n");
                         socialCapitalExchanges.add(ett.get(2));
                         noSocialCapitalExchanges.add(ett.get(3));
+                        altruisticExchanges.add(ett.get(4));
                     }
                 }
                 double sce = socialCapitalExchanges.stream().mapToDouble(val -> val).average().orElse(0.0);
                 double nsce = noSocialCapitalExchanges.stream().mapToDouble(val -> val).average().orElse(0.0);
+                double ae = altruisticExchanges.stream().mapToDouble(val -> val).average().orElse(0.0);
                 statsSummaryDataWriter.append("Social Capital Exchanges: " + (String.valueOf(sce))+ "\n");
                 statsSummaryDataWriter.append("No Social Capital Exchanges: " + (String.valueOf(nsce))+ "\n");
+                statsSummaryDataWriter.append("Altruistic Exchanges: " + (String.valueOf(ae))+ "\n");
+                System.out.println("\nday " + day);
+                System.out.println("Social Capital Exchanges: " + (String.valueOf(sce)));
+                System.out.println("No Social Capital Exchanges: " + (String.valueOf(nsce)));
+                System.out.println("Altruistic Exchanges: " + (String.valueOf(ae)));
 
                 ArrayList<Integer> rejectedReceivedExchanges = new ArrayList<>();
                 ArrayList<Integer> acceptedReceivedExchanges = new ArrayList<>();

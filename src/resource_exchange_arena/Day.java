@@ -183,9 +183,8 @@ public class Day {
                 ArrayList<Double> endOfDaySatisfaction = new ArrayList<>();
                 endOfDaySatisfaction.add((double) day);
                 endOfDaySatisfaction.add((double) a.getAgentType());
-                endOfDaySatisfaction.add(a.calculateSatisfaction(null));
+                endOfDaySatisfaction.add(a.calculateStandardSatisfaction(null));
                 endOfDaySatisfactions.add(endOfDaySatisfaction);
-
                 ArrayList<Integer> socialCapitalTracked = new ArrayList<>();
                 socialCapitalTracked.add(day);
                 socialCapitalTracked.add(a.getAgentType());
@@ -197,6 +196,7 @@ public class Day {
                 exchangeTypeTracked.add(a.getAgentType());
                 exchangeTypeTracked.add(a.getSocialCapitalExchanges());
                 exchangeTypeTracked.add(a.getNoSocialCapitalExchanges());
+                exchangeTypeTracked.add(a.getDailyNegativeExchanges());
                 exchangeTypeTracking.add(exchangeTypeTracked);
 
                 ArrayList<Integer> exchangeSuccessTracked = new ArrayList<>();

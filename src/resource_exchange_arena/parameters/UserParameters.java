@@ -70,12 +70,12 @@ public abstract class UserParameters extends FixedParameters {
     // the following arrays. All possible combinations will be simulated.
     // ################################################################################################################
     // Number of exchange rounds per day.
-    public static final int[] EXCHANGES_ARRAY = {1,50,150,200};
+    public static final int[] EXCHANGES_ARRAY = {1,50,100,150,200};
     // Example: "{1,50,100,150,200};"
 
     // Percentage of agents that will evolve their strategy per day.
     // CURRENTLY MUST HAVE MORE THAN 1 VALUE
-    public static final int[] PERCENTAGE_OF_AGENTS_TO_EVOLVE_ARRAY = {100};
+    public static final int[] PERCENTAGE_OF_AGENTS_TO_EVOLVE_ARRAY = {0, 100};
     // Example: "{0,50,100}" {0, 10, 25, 50,100}
 
     // Ratio of starting agent types, i.e. {SELFISH, SELFISH, SOCIAL} would cause the simulation to start with two
@@ -93,5 +93,5 @@ public abstract class UserParameters extends FixedParameters {
     //     be compared.
     // 2 = The above combinations will be ran both with and without social capital enabled and with only selfish agents
     //     and with only social agents so that a baseline comparison can be made between the agents types.
-    public static int COMPARISON_LEVEL = 2;
+    public static int COMPARISON_LEVEL = 1;
 }

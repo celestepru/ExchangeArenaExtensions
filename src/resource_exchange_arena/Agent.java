@@ -27,6 +27,8 @@ class Agent {
     private boolean exchangeRequestApproved;
     private int totalSocialCapital;
     private int dailySocialCapitalExchanges;
+
+    private int dailyNegativeExchanges;
     private int dailyNoSocialCapitalExchanges;
     private int dailyRejectedReceivedExchanges;
     private int dailyRejectedRequestedExchanges;
@@ -37,7 +39,7 @@ class Agent {
     private int[] flexibilityCurve;
     private int marginOfKindness;
 
-    private int maxDistance = 5;
+    private int maxDistance = 2;
 
     /**
      * Agents represent the individual consumers in the simulation.
@@ -253,6 +255,7 @@ class Agent {
      */
     void resetDailyTracking() {
         dailySocialCapitalExchanges = 0;
+        dailyNegativeExchanges = 0;
         dailyNoSocialCapitalExchanges = 0;
         dailyRejectedReceivedExchanges = 0;
         dailyRejectedRequestedExchanges = 0;
@@ -267,6 +270,8 @@ class Agent {
     int getSocialCapitalExchanges() {
         return dailySocialCapitalExchanges;
     }
+
+    int getDailyNegativeExchanges() {return dailyNegativeExchanges;}
 
     /**
      * Getter method for retrieving the number of exchanges approved without social capital.
@@ -604,10 +609,11 @@ class Agent {
                     dailyNoSocialCapitalExchanges++;
                 } else if(Double.compare(potentialSatisfaction, currentSatisfaction) == 0){
                     if (usesSocialCapital) {
-                        boolean isGood = this.reputationSystem.getAgentReputationWithMargin(exchangeRequestReceived.get(0));
+                        boolean isGood = this.reputationSystem.getAgentReputation(exchangeRequestReceived.get(0));
                         if (isGood) {
-                            exchangeRequestApproved= true;
+                            //System.out.println("Neutrl");
                             dailySocialCapitalExchanges++;
+                            exchangeRequestApproved= true;
                         }
                     } else {
                         // When social capital isn't used, social agents always accept neutral exchanges.
@@ -615,8 +621,8 @@ class Agent {
                         dailyNoSocialCapitalExchanges++;
                     }
                 } else if(Double.compare(potentialSatisfaction, currentSatisfaction) < 0){
-                    if(usesSocialCapital && useFlexibility) {
-                        boolean isGood = this.reputationSystem.getAgentReputationWithMargin(exchangeRequestReceived.get(0));
+                    if(usesSocialCapital && useFlexibility && dailyNegativeExchanges<1) {
+                        boolean isGood = this.reputationSystem.getAgentReputation(exchangeRequestReceived.get(0));
                         if(isGood) {
                            /* System.out.println("\npotsat = " + potentialSatisfaction);
                             System.out.println("currentsat = " + currentSatisfaction);*/
@@ -625,21 +631,18 @@ class Agent {
                             //System.out.println("ReqGain: " +requesterGain);
                             //System.out.println("MyGain: " + myGain);
                             if(requesterGain-myGain>=marginOfKindness && currentSatisfaction-potentialSatisfaction<0.2) {
-                                int potentialGain = getFlexibleGain(exchangeRequestReceived.get(2));
-                                /*
-                                System.out.println("Pgain: " + potentialGain);
-                                    System.out.println("SUCCESS");
+                               /* int potentialGain = getFlexibleGain(exchangeRequestReceived.get(2));
                                     System.out.println("\n");
                                     System.out.println("Req gain: " + requesterGain);
                                     System.out.println("My gain: " + myGain);
-                                    System.out.println("favours given: " + this.reputationSystem.getFavoursGiven(exchangeRequestReceived.get(0)));
+                                   System.out.println("favours given: " + this.reputationSystem.getFavoursGiven(exchangeRequestReceived.get(0)));
                                     System.out.println("favours owed: " + this.reputationSystem.getFavoursOwed(exchangeRequestReceived.get(0)));
                                     if(exchangeRequestReceived.get(4) == ResourceExchangeArena.SELFISH) {
                                         System.out.println("SELFISH");
                                         System.out.println("\n");
                                     }*/
+                                    dailyNegativeExchanges++;
                                     exchangeRequestApproved = true;
-                                    dailySocialCapitalExchanges++;
 
                             } else {
                                 exchangeRequestApproved = false;
@@ -744,7 +747,13 @@ class Agent {
      */
 
     double calculateSatisfaction(ArrayList<Integer> timeSlots) {
-        return calculateFlexbileSatisfaction(timeSlots);
+        double sat;
+        if(useFlexibility) {
+            sat = calculateFlexbileSatisfaction(timeSlots);
+        } else {
+            sat = calculateStandardSatisfaction(timeSlots);
+        }
+        return sat;
     }
     double calculateStandardSatisfaction(ArrayList<Integer> timeSlots) {
         if (timeSlots == null) {

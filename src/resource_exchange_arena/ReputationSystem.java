@@ -8,6 +8,8 @@ public class ReputationSystem implements Mediator{
     ArrayList<ArrayList<Integer>> globalFavoursOwed;
     ArrayList<Agent> agents;
 
+    int maxSocialCap;
+
     public ReputationSystem() {
         agents = new ArrayList<>();
         globalFavoursGiven = new ArrayList<>();
@@ -55,6 +57,10 @@ public class ReputationSystem implements Mediator{
     }
 
     public boolean getAgentReputationWithMargin(int agentID) {
+        int maxOwed = calculateMaxFavours();
+        int margin = maxOwed-(maxOwed/3);
+
+        //System.out.println("max" + maxOwed);
         int favoursGiven = 0;
         int favoursOwed = 0;
         for(ArrayList<Integer> given : globalFavoursGiven) {
@@ -75,6 +81,43 @@ public class ReputationSystem implements Mediator{
             }
         }
         return false;
+    }
+
+    public boolean getAgentReputationWithMargin2(int agentID) {
+        int maxOwed = calculateMaxFavours();
+        int margin = maxOwed-(maxOwed/3);
+
+        //System.out.println("max" + maxOwed);
+        int favoursGiven = 0;
+        int favoursOwed = 0;
+        for(ArrayList<Integer> given : globalFavoursGiven) {
+            if(given.get(0) == agentID) {
+                favoursGiven = given.get(1);
+                break;
+            }
+        }
+        for(ArrayList<Integer> owed : globalFavoursOwed) {
+            if(owed.get(0) == agentID) {
+                favoursOwed = owed.get(1);
+                break;
+            }
+        }
+        if(favoursOwed>favoursGiven) {
+            if(favoursOwed>margin) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public int calculateMaxFavours() {
+        int maxOwed = 0;
+        for(ArrayList<Integer> owed : globalFavoursOwed) {
+            if(owed.get(1) > maxOwed) {
+                maxOwed = owed.get(1);
+            }
+        }
+        return maxOwed;
     }
 
     @Override
