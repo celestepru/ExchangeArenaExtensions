@@ -8,13 +8,11 @@ public class Flexibility {
     int minValue;
     int[] flexibilityCurve;
 
-    int maxDistance;
     /**
      *
      * @param flexibility - The maximum distance in terms of hours acceptable by the agent. Can be set to match number of wanted slots.
      */
-    Flexibility(int flexibility, int maxDistance) {
-        this.maxDistance = maxDistance;
+    Flexibility(int flexibility) {
         maxValue = ResourceExchangeArena.MAX_GAIN;
         minValue = 0;
         //Check flexibility is not negative
@@ -38,9 +36,5 @@ public class Flexibility {
     int[] getFlexibilityCurve() {
         return flexibilityCurve;
     }
-
-    int getMaxDistance() { return maxDistance; }
-
-
 
 }

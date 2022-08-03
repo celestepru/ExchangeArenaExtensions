@@ -34,8 +34,8 @@ public class ReputationSystem implements Mediator{
         globalFavoursGiven.add(favoursGivenRelation);
     }
 
-    @Override
-    public boolean getAgentReputation(int agentID) {
+
+    public boolean getAgentReputationSt(int agentID) {
         int favoursGiven = 0;
         int favoursOwed = 0;
         for(ArrayList<Integer> given : globalFavoursGiven) {
@@ -56,7 +56,7 @@ public class ReputationSystem implements Mediator{
         return false;
     }
 
-    public boolean getAgentReputationWithMargin(int agentID) {
+    public boolean getAgentReputationWithMargin1(int agentID) {
         int maxOwed = calculateMaxFavours();
         int margin = maxOwed-(maxOwed/3);
 
@@ -82,8 +82,8 @@ public class ReputationSystem implements Mediator{
         }
         return false;
     }
-
-    public boolean getAgentReputationWithMargin2(int agentID) {
+    @Override
+    public boolean getAgentReputation(int agentID) {
         int maxOwed = calculateMaxFavours();
         int margin = maxOwed-(maxOwed/3);
 
@@ -138,35 +138,6 @@ public class ReputationSystem implements Mediator{
                 rep.set(1, currentFavours+update);
             }
         }
-    }
-
-    @Override
-    public int getFavoursOwed(int agentID) {
-        for(ArrayList<Integer> rep : globalFavoursOwed) {
-            if(rep.get(0) == agentID) {
-                return rep.get(1);
-            }
-        }
-        return 0;
-    }
-    @Override
-    public int getFavoursGiven(int agentID) {
-        for(ArrayList<Integer> rep : globalFavoursGiven) {
-            if(rep.get(0) == agentID) {
-                return rep.get(1);
-            }
-        }
-        return 0;
-    }
-
-    public int getAgentType(int agentID) {
-        int agentType = 0;
-        for(Agent a : agents) {
-            if(a.agentID == agentID) {
-                agentType = a.getAgentType();
-            }
-        }
-        return agentType;
     }
 
 }

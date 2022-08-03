@@ -336,7 +336,6 @@ public class ResourceExchangeArena extends UserParameters {
                             AVAILABILITY_CURVE,
                             USE_SOCIAL_CAPITAL,
                             USE_FLEXIBILITY,
-                            FLEXIBILITY,
                             MAX_DISTANCE,
                             MARGIN_OF_KINDNESS,
                             SIMULATION_RUNS,
