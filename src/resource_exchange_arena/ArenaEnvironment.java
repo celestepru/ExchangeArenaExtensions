@@ -7,6 +7,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
+import static resource_exchange_arena.parameters.UserParameters.MARGIN_OF_KINDNESS;
+
 public class ArenaEnvironment {
     // Data that is collected over simulation runs is held within the arenaEnvironment.
     ArrayList<ArrayList<Double>> endOfDaySatisfactions = new ArrayList<>();
@@ -269,6 +271,9 @@ public class ArenaEnvironment {
                     .append(String.valueOf(selectedSingleAgentType)).append("\n");
         }
         simulationDataWriter.append("Use social capital: ").append(String.valueOf(socialCapital)).append("\n");
+        simulationDataWriter.append("Use altruism: ").append(String.valueOf(ResourceExchangeArena.USE_FLEXIBILITY)).append("\n");
+        simulationDataWriter.append("Margin of kindness: ").append(String.valueOf(ResourceExchangeArena.MARGIN_OF_KINDNESS)).append("\n");
+        simulationDataWriter.append("Flexibility (max distance): ").append(String.valueOf(ResourceExchangeArena.MAX_DISTANCE)).append("\n");
         simulationDataWriter.append("Simulation runs: ").append(String.valueOf(simulationRuns)).append("\n");
         simulationDataWriter.append("Days: ").append(String.valueOf(days)).append("\n");
         simulationDataWriter.append("Days of interest: ").append(Arrays.toString(daysOfInterest)).append("\n");

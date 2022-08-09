@@ -26,19 +26,24 @@ public class ResourceExchangeArena extends UserParameters {
      * @see IOException
      */
     public static void main(String[] args) throws IOException {
+        long start;
+        long end;
         switch (COMPARISON_LEVEL) {
             case 1:
-                /*
+                start = System.currentTimeMillis();
                 // Test user parameters with and without social capital for comparison.
                 USE_SOCIAL_CAPITAL = false;
                 runSimulationSet();
                 System.out.println("********** 1 / 2 ENVIRONMENT VERSIONS COMPLETE **********");
-                */
                 USE_SOCIAL_CAPITAL = true;
                 runSimulationSet();
                 System.out.println("********** 2 / 2 ENVIRONMENT VERSIONS COMPLETE **********");
+                end = System.currentTimeMillis();
+                long elapsedTime = end - start;
+                System.out.println("Elapsed time: " + elapsedTime);
                 break;
             case 2:
+                start = System.currentTimeMillis();
                 // As above but also test single agent type populations for reference.
                 USE_SOCIAL_CAPITAL = false;
                 SINGLE_AGENT_TYPE = true;
@@ -66,6 +71,9 @@ public class ResourceExchangeArena extends UserParameters {
                 SINGLE_AGENT_TYPE = false;
                 runSimulationSet();
                 System.out.println("********** 5 / 5 ENVIRONMENT VERSIONS COMPLETE **********");
+                end = System.currentTimeMillis();
+                elapsedTime = end - start;
+                System.out.println("Elapsed time: " + elapsedTime);
                 break;
             default:
                 // Run only the set of parameters defined by the user.
@@ -173,6 +181,9 @@ public class ResourceExchangeArena extends UserParameters {
                     .append(String.valueOf(SELECTED_SINGLE_AGENT_TYPE)).append("\n");
         }
         allSimulationsDataWriter.append("Use social capital: ").append(String.valueOf(USE_SOCIAL_CAPITAL)).append("\n");
+        allSimulationsDataWriter.append("Use altruism: ").append(String.valueOf(USE_FLEXIBILITY)).append("\n");
+        allSimulationsDataWriter.append("Margin of kindness: ").append(String.valueOf(MARGIN_OF_KINDNESS)).append("\n");
+        allSimulationsDataWriter.append("Flexibility (max distance): ").append(String.valueOf(MAX_DISTANCE)).append("\n");
         allSimulationsDataWriter.append("Simulation runs: ").append(String.valueOf(SIMULATION_RUNS)).append("\n");
         allSimulationsDataWriter.append("Days: ").append(String.valueOf(DAYS)).append("\n");
         allSimulationsDataWriter.append("Days of interest: ").append(Arrays.toString(DAYS_OF_INTEREST)).append("\n");

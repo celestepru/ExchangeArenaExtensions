@@ -52,8 +52,8 @@ public abstract class UserParameters extends FixedParameters {
     public static boolean USE_SOCIAL_CAPITAL = true;
 
     public static boolean USE_FLEXIBILITY = true;
-    public static int MAX_DISTANCE = 3;
-    public static int MARGIN_OF_KINDNESS = 60;
+    public static int MAX_DISTANCE = 2;
+    public static int MARGIN_OF_KINDNESS = 50;
 
     // Arrays of demand used by the agents, when multiple curves are used the agents are split equally between the curves.
     // The arrays should have 1 value for each 10 minute segment of the day.
