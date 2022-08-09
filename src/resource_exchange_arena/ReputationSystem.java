@@ -99,7 +99,11 @@ public class ReputationSystem implements Mediator{
             }
         }
         if(favoursOwed>favoursGiven) {
-            if(favoursOwed>margin) {
+            if(ResourceExchangeArena.USE_REPUTATION_MARGIN) {
+                if(favoursOwed>margin) {
+                    return true;
+                }
+            } else {
                 return true;
             }
         }
