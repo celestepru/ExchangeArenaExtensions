@@ -59,8 +59,6 @@ public class ReputationSystem implements Mediator{
     public boolean getAgentReputationWithMargin1(int agentID) {
         int maxOwed = calculateMaxFavours();
         int margin = maxOwed-(maxOwed/3);
-
-        //System.out.println("max" + maxOwed);
         int favoursGiven = 0;
         int favoursOwed = 0;
         for(ArrayList<Integer> given : globalFavoursGiven) {
@@ -86,8 +84,6 @@ public class ReputationSystem implements Mediator{
     public boolean getAgentReputation(int agentID) {
         int maxOwed = calculateMaxFavours();
         int margin = maxOwed-(maxOwed/3);
-
-        //System.out.println("max" + maxOwed);
         int favoursGiven = 0;
         int favoursOwed = 0;
         for(ArrayList<Integer> given : globalFavoursGiven) {

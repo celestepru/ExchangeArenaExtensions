@@ -570,10 +570,6 @@ public class ArenaEnvironment {
                 statsSummaryDataWriter.append("Social Capital Exchanges: " + (String.valueOf(sce))+ "\n");
                 statsSummaryDataWriter.append("No Social Capital Exchanges: " + (String.valueOf(nsce))+ "\n");
                 statsSummaryDataWriter.append("Altruistic Exchanges: " + (String.valueOf(ae))+ "\n");
-                System.out.println("\nday " + day);
-                System.out.println("Social Capital Exchanges: " + (String.valueOf(sce)));
-                System.out.println("No Social Capital Exchanges: " + (String.valueOf(nsce)));
-                System.out.println("Altruistic Exchanges: " + (String.valueOf(ae)));
 
                 ArrayList<Integer> rejectedReceivedExchanges = new ArrayList<>();
                 ArrayList<Integer> acceptedReceivedExchanges = new ArrayList<>();
