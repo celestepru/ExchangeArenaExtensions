@@ -74,7 +74,7 @@ class Exchange {
                     if(a.usesFlexibility() && a.usesSocialCapital()) {
                         request.add(a.getFlexibleGain(chosenAdvert.get(1)));
                     } else {
-                         request.add(100);
+                         request.add(ResourceExchangeArena.MAX_GAIN);
                     }
                     request.add(a.getAgentType());
 

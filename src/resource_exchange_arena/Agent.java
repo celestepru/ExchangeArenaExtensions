@@ -51,12 +51,12 @@ class Agent {
      * @param agents Array List of all the agents that exist in the current simulation.
      * @param socialCapital determines whether the agent uses socialCapital.
      */
-    Agent(int agentID, int agentType, int slotsPerAgent, ArrayList<Agent> agents, Mediator reputationSystem, boolean socialCapital, boolean useFlexibility, int[] flexibilityCurve, int marginOfKindness){
+    Agent(int agentID, int agentType, int slotsPerAgent, ArrayList<Agent> agents, Mediator reputationSystem, boolean socialCapital, boolean useFlexibility, int[] flexibilityCurve, double marginOfKindness){
         this.agentID = agentID;
         this.agentType = agentType;
         this.usesSocialCapital = socialCapital;
         this.reputationSystem = reputationSystem;
-        this.marginOfKindness = marginOfKindness;
+        this.marginOfKindness = (int)marginOfKindness*100;
         this.useFlexibility = useFlexibility;
         this.flexibilityCurve = flexibilityCurve;
 
