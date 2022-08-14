@@ -589,7 +589,6 @@ class Agent {
                     if (usesSocialCapital) {
                         boolean isGood = this.reputationSystem.getAgentReputation(exchangeRequestReceived.get(0));
                         if (isGood) {
-                            //System.out.println("Neutrl");
                             dailySocialCapitalExchanges++;
                             exchangeRequestApproved= true;
                         }
@@ -602,23 +601,9 @@ class Agent {
                     if(usesSocialCapital && useFlexibility) {
                         boolean isGood = this.reputationSystem.getAgentReputation(exchangeRequestReceived.get(0));
                         if(isGood) {
-                           /* System.out.println("\npotsat = " + potentialSatisfaction);
-                            System.out.println("currentsat = " + currentSatisfaction);*/
                             int requesterGain = exchangeRequestReceived.get(3);
                             int myGain = getFlexibleGain(exchangeRequestReceived.get(1));
-                            //System.out.println("ReqGain: " +requesterGain);
-                            //System.out.println("MyGain: " + myGain);
                             if(requesterGain-myGain>=marginOfKindness) {
-                               /* int potentialGain = getFlexibleGain(exchangeRequestReceived.get(2));
-                                    System.out.println("\n");
-                                    System.out.println("Req gain: " + requesterGain);
-                                    System.out.println("My gain: " + myGain);
-                                   System.out.println("favours given: " + this.reputationSystem.getFavoursGiven(exchangeRequestReceived.get(0)));
-                                    System.out.println("favours owed: " + this.reputationSystem.getFavoursOwed(exchangeRequestReceived.get(0)));
-                                    if(exchangeRequestReceived.get(4) == ResourceExchangeArena.SELFISH) {
-                                        System.out.println("SELFISH");
-                                        System.out.println("\n");
-                                    }*/
                                     dailyNegativeExchanges++;
                                     exchangeRequestApproved = true;
 

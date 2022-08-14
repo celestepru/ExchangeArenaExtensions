@@ -32,10 +32,16 @@ public class ResourceExchangeArena extends UserParameters {
             case 1:
                 start = System.currentTimeMillis();
                 // Test user parameters with and without social capital for comparison.
+                /*
                 USE_SOCIAL_CAPITAL = false;
+                runSimulationSet();
+                System.out.println("********** 1 / 2 ENVIRONMENT VERSIONS COMPLETE **********");*/
+                USE_SOCIAL_CAPITAL = true;
+                USE_REPUTATION_MARGIN = false;
                 runSimulationSet();
                 System.out.println("********** 1 / 2 ENVIRONMENT VERSIONS COMPLETE **********");
                 USE_SOCIAL_CAPITAL = true;
+                USE_REPUTATION_MARGIN = true;
                 runSimulationSet();
                 System.out.println("********** 2 / 2 ENVIRONMENT VERSIONS COMPLETE **********");
                 end = System.currentTimeMillis();
@@ -154,7 +160,7 @@ public class ResourceExchangeArena extends UserParameters {
         random.setSeed(seed);
 
         // Create a directory to store the data output by all simulations being run.
-        String dataOutputFolder = FOLDER_NAME + "/useSC_" + USE_SOCIAL_CAPITAL + "_AType_";
+        String dataOutputFolder = FOLDER_NAME + "/useRM_" + USE_REPUTATION_MARGIN + "/useSC_" + USE_SOCIAL_CAPITAL + "_AType_";
         if (!SINGLE_AGENT_TYPE) {
             dataOutputFolder += "mixed";
         } else {

@@ -35,7 +35,16 @@ public class ReputationSystem implements Mediator{
     }
 
 
-    public boolean getAgentReputationSt(int agentID) {
+    @Override
+    public boolean getAgentReputation(int agentID) {
+        if(ResourceExchangeArena.USE_REPUTATION_MARGIN) {
+            return getAgentReputationWithMargin(agentID);
+        } else {
+            return getAgentReputationWithoutMargin(agentID);
+        }
+    }
+
+    public boolean getAgentReputationWithoutMargin(int agentID) {
         int favoursGiven = 0;
         int favoursOwed = 0;
         for(ArrayList<Integer> given : globalFavoursGiven) {
@@ -55,8 +64,7 @@ public class ReputationSystem implements Mediator{
         }
         return false;
     }
-
-    public boolean getAgentReputationWithMargin1(int agentID) {
+    public boolean getAgentReputationWithMargin(int agentID) {
         int maxOwed = calculateMaxFavours();
         int margin = maxOwed-(maxOwed/3);
         int favoursGiven = 0;
@@ -74,36 +82,7 @@ public class ReputationSystem implements Mediator{
             }
         }
         if(favoursOwed>favoursGiven) {
-            if(favoursOwed-favoursGiven>25) {
-                return true;
-            }
-        }
-        return false;
-    }
-    @Override
-    public boolean getAgentReputation(int agentID) {
-        int maxOwed = calculateMaxFavours();
-        int margin = maxOwed-(maxOwed/3);
-        int favoursGiven = 0;
-        int favoursOwed = 0;
-        for(ArrayList<Integer> given : globalFavoursGiven) {
-            if(given.get(0) == agentID) {
-                favoursGiven = given.get(1);
-                break;
-            }
-        }
-        for(ArrayList<Integer> owed : globalFavoursOwed) {
-            if(owed.get(0) == agentID) {
-                favoursOwed = owed.get(1);
-                break;
-            }
-        }
-        if(favoursOwed>favoursGiven) {
-            if(ResourceExchangeArena.USE_REPUTATION_MARGIN) {
-                if(favoursOwed>margin) {
-                    return true;
-                }
-            } else {
+            if(favoursOwed>margin) {
                 return true;
             }
         }
