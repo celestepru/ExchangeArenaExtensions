@@ -51,6 +51,8 @@ public abstract class UserParameters extends FixedParameters {
     // Specify whether social capital  should be used by the social agents.
     public static boolean USE_SOCIAL_CAPITAL = true;
 
+    public static int SOCIAL_CAPITAL_TYPE = 2;  //1 for individual, 2 for global
+
     public static boolean USE_FLEXIBILITY = true;
     public static int MAX_DISTANCE = 10;
     public static int MARGIN_OF_KINDNESS = 70;
