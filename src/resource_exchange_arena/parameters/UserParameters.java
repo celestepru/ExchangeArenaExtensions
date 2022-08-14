@@ -48,15 +48,29 @@ public abstract class UserParameters extends FixedParameters {
     // Specify the single agent type to be simulated when 'SINGLE_AGENT_TYPE = true', e.g. 'SELFISH' or 'SOCIAL'.
     public static int SELECTED_SINGLE_AGENT_TYPE = SOCIAL;
 
-    // Specify whether social capital  should be used by the social agents.
+    // Specify whether social capital should be used by the social agents.
     public static boolean USE_SOCIAL_CAPITAL = true;
 
-    public static int SOCIAL_CAPITAL_TYPE = 2;  //1 for individual, 2 for global
+    //Specify which type of social capital should be used by agents. 1 for individual, 2 for global.
+    public static int SOCIAL_CAPITAL_TYPE = 2;
 
+    // Specify whether flexibility (altruism) should be used by the social agents.
+    // Parameter will not be useful without social capital enabled.
     public static boolean USE_FLEXIBILITY = true;
+
+    //Specify the maximum distance acceptable by social agents performing altruistic exchanges.
+    //Parameter will not be useful without flexibility enabled.
+    // MUST BE HIGHER THAN 0
     public static int MAX_DISTANCE = 10;
-    public static int MARGIN_OF_KINDNESS = 70;
+
+    //Specify the threshold of kindness used by social agents.
+    //Parameter will not be useful without flexibility enabled.
+    public static int MARGIN_OF_KINDNESS = 50;
+    // Example: 50
+
+    //Specify whether to use a margin of reputation to assess agents in social capital exchanges.
     public static boolean USE_REPUTATION_MARGIN = false;
+
     // Arrays of demand used by the agents, when multiple curves are used the agents are split equally between the curves.
     // The arrays should have 1 value for each 10 minute segment of the day.
     public static final double[][] DEMAND_CURVES = {{1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0}};

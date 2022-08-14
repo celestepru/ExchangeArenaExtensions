@@ -8,8 +8,6 @@ public class ReputationSystem implements Mediator{
     ArrayList<ArrayList<Integer>> globalFavoursOwed;
     ArrayList<Agent> agents;
 
-    int maxSocialCap;
-
     public ReputationSystem() {
         agents = new ArrayList<>();
         globalFavoursGiven = new ArrayList<>();
@@ -35,6 +33,12 @@ public class ReputationSystem implements Mediator{
     }
 
 
+    /**
+     * Getter method for agent reputation. Picks a method based on whether a reputation margin is enabled.
+     *
+     * @param agentID The agent to be assessed.
+     * @return Return true if the agent has positive social capital, false if it doesn't.
+     */
     @Override
     public boolean getAgentReputation(int agentID) {
         if(ResourceExchangeArena.USE_REPUTATION_MARGIN) {
@@ -44,15 +48,23 @@ public class ReputationSystem implements Mediator{
         }
     }
 
+    /**
+     * Get an agent's reputation from the list. Return a result without using a threshold of reputation.
+     *
+     * @param agentID The agent to be assessed.
+     * @return Return true if the agent has positive social capital, false if it doesn't.
+     */
     public boolean getAgentReputationWithoutMargin(int agentID) {
         int favoursGiven = 0;
         int favoursOwed = 0;
+        //Find agent in list of favours it has been given
         for(ArrayList<Integer> given : globalFavoursGiven) {
             if(given.get(0) == agentID) {
                 favoursGiven = given.get(1);
                 break;
             }
         }
+        //Find agent in list of favours it is owed
         for(ArrayList<Integer> owed : globalFavoursOwed) {
             if(owed.get(0) == agentID) {
                 favoursOwed = owed.get(1);
@@ -64,23 +76,34 @@ public class ReputationSystem implements Mediator{
         }
         return false;
     }
+
+    /**
+     * Get an agent's reputation from the list. Return a result using a threshold of reputation:
+     * an agent's reputation must be higher than 2/3 of the maximum social capital in the system.
+     *
+     * @param agentID The agent to be assessed.
+     * @return Return true if the agent has positive social capital, false if it doesn't.
+     */
     public boolean getAgentReputationWithMargin(int agentID) {
-        int maxOwed = calculateMaxFavours();
-        int margin = maxOwed-(maxOwed/3);
+        int maxOwed = calculateMaxFavours();    //find maximum favours given
+        int margin = maxOwed-(maxOwed/3);   //Calculate 2/3
         int favoursGiven = 0;
         int favoursOwed = 0;
+        //Find agent in list of favours it has been given
         for(ArrayList<Integer> given : globalFavoursGiven) {
             if(given.get(0) == agentID) {
                 favoursGiven = given.get(1);
                 break;
             }
         }
+        //Find agent in list of favours it is owed
         for(ArrayList<Integer> owed : globalFavoursOwed) {
             if(owed.get(0) == agentID) {
                 favoursOwed = owed.get(1);
                 break;
             }
         }
+        //Assess favours with margin
         if(favoursOwed>favoursGiven) {
             if(favoursOwed>margin) {
                 return true;
@@ -89,6 +112,12 @@ public class ReputationSystem implements Mediator{
         return false;
     }
 
+
+    /**
+     * Find maximum number of favours given in the system.
+     *
+     * @return maximum number of favours given in the system.
+     */
     public int calculateMaxFavours() {
         int maxOwed = 0;
         for(ArrayList<Integer> owed : globalFavoursOwed) {
@@ -99,6 +128,12 @@ public class ReputationSystem implements Mediator{
         return maxOwed;
     }
 
+    /**
+     * After an exchange is performed, updates the agent's global score of favours it is owed.
+     *
+     * @param agentID the agent whose reputation is to be updated
+     * @param update the amount by which the reputation has to be updated. Can be positive or negative.
+     */
     @Override
     public void updateFavoursOwed(int agentID, int update) {
         for(ArrayList<Integer> rep : globalFavoursOwed) {
@@ -109,6 +144,12 @@ public class ReputationSystem implements Mediator{
         }
     }
 
+    /**
+     * After an exchange is performed, updates the agent's global score of favours it has given.
+     *
+     * @param agentID the agent whose reputation is to be updated
+     * @param update the amount by which the reputation has to be updated. Can be positive or negative.
+     */
     @Override
     public void updateFavoursGiven(int agentID, int update) {
         for(ArrayList<Integer> rep : globalFavoursGiven) {

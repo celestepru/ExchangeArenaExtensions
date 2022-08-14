@@ -21,25 +21,18 @@ class Agent {
     private ArrayList<ArrayList<Integer>> favoursOwed = new ArrayList<>();
     private ArrayList<ArrayList<Integer>> favoursGiven = new ArrayList<>();
     private ArrayList<Integer> exchangeRequestReceived = new ArrayList<>();
-    private ArrayList<Integer> globalFavoursGiven = new ArrayList<>();
-    private ArrayList<ArrayList<Integer>> flexibleSatisfactionValues = new ArrayList<>();
     private Mediator reputationSystem;
     private boolean exchangeRequestApproved;
     private int totalSocialCapital;
     private int dailySocialCapitalExchanges;
-
     private int dailyNegativeExchanges;
     private int dailyNoSocialCapitalExchanges;
     private int dailyRejectedReceivedExchanges;
     private int dailyRejectedRequestedExchanges;
     private int dailyAcceptedRequestedExchanges;
-
     private boolean useFlexibility;
-
     private int[] flexibilityCurve;
     private int marginOfKindness;
-
-    private int maxDistance = 2;
 
     /**
      * Agents represent the individual consumers in the simulation.
@@ -50,13 +43,17 @@ class Agent {
      * @param slotsPerAgent Integer value representing the number of time slots each agent requires.
      * @param agents Array List of all the agents that exist in the current simulation.
      * @param socialCapital determines whether the agent uses socialCapital.
+     * @param flexibilityCurve Determines the possible satisfaction values for each hour of distance.
+     * @param marginOfKindness Determines the threshold of gain an altruistic swap has to go over.
+     * @param reputationSystem Global reputation system, holding social capital scores for every agent.
+     * @param useFlexibility Determines whether the agent uses flexibility (altruism).
      */
-    Agent(int agentID, int agentType, int slotsPerAgent, ArrayList<Agent> agents, Mediator reputationSystem, boolean socialCapital, boolean useFlexibility, int[] flexibilityCurve, double marginOfKindness){
+    Agent(int agentID, int agentType, int slotsPerAgent, ArrayList<Agent> agents, Mediator reputationSystem, boolean socialCapital, boolean useFlexibility, int[] flexibilityCurve, int marginOfKindness){
         this.agentID = agentID;
         this.agentType = agentType;
         this.usesSocialCapital = socialCapital;
         this.reputationSystem = reputationSystem;
-        this.marginOfKindness = (int)marginOfKindness*100;
+        this.marginOfKindness = marginOfKindness;
         this.useFlexibility = useFlexibility;
         this.flexibilityCurve = flexibilityCurve;
 
@@ -85,7 +82,6 @@ class Agent {
 
     boolean usesFlexibility() { return useFlexibility;}
 
-    int getMarginOfKindness() {return marginOfKindness;}
     /**
      * Used to change an Agents type during a simulation.
      *
@@ -115,15 +111,6 @@ class Agent {
     }
 
     /**
-     * Getter for the number of timeslots requested.
-     *
-     * @return boolean Returns the number of timeslots the Agent wants.
-     */
-    int numberOfTimeSlotsWanted() {
-        return numberOfTimeSlotsWanted;
-    }
-
-    /**
      * Getter for whether the Agent approved the current received exchange request.
      *
      * @return boolean Returns whether the Agent approved the current received exchange request.
@@ -147,8 +134,6 @@ class Agent {
     ArrayList<Integer> getExchangeRequestReceived() {
         return exchangeRequestReceived;
     }
-
-    ArrayList<ArrayList<Integer>> getFlexibleSatisfactionValues() { return flexibleSatisfactionValues;}
 
     /**
      * Setter for the currently received exchange request.
@@ -271,6 +256,11 @@ class Agent {
         return dailySocialCapitalExchanges;
     }
 
+    /**
+     * Getter method for retrieving the number of altruistic exchanges approved.
+     *
+     * @return Return the number of altruistic exchanges performed by the agent.
+     */
     int getDailyNegativeExchanges() {return dailyNegativeExchanges;}
 
     /**
@@ -281,7 +271,6 @@ class Agent {
     int getNoSocialCapitalExchanges() {
         return dailyNoSocialCapitalExchanges;
     }
-
     /**
      * Getter method for retrieving the number of exchanges rejected by this agent.
      *
@@ -363,54 +352,21 @@ class Agent {
         this.allocatedTimeSlots = allocatedTimeSlots;
     }
 
-    ArrayList<ArrayList<Integer>> createFlexibleSatisfactionValues(ArrayList<Integer> timeSlots) {
-        if(timeSlots == null) {
-            timeSlots = this.allocatedTimeSlots;
-        }
-        ArrayList<ArrayList<Integer>> satisfactionValues = new ArrayList<>();
-        for(int t : timeSlots) {
-            ArrayList<Integer> values = new ArrayList<>();
-            int target = t;
-            int distance = Math.abs(requestedTimeSlots.get(0)-target);
-            for(int c = 1; c<requestedTimeSlots.size(); c++) {
-                int cdistance = Math.abs(requestedTimeSlots.get(c)-target);
-                if(cdistance < distance) {
-                    distance = cdistance;
-                }
-            }
-            values.add(target);
-            if(distance>=maxDistance) {
-                values.add(0);
-            } else if(distance<maxDistance && distance>0) {
-                values.add(50);
-            } else if(distance==0) {
-                values.add(100);
-            } else {
-                values.add(0);
-            }
-
-           /* if(flexibilityCurve.length>distance) {
-                int satisfaction = flexibilityCurve[distance];
-                values.add(target);
-                values.add(satisfaction);
-                System.out.println(satisfaction);
-            } else {
-                values.add(target);
-                values.add(0);
-            }*/
-            satisfactionValues.add(values);
-        }
-        if(satisfactionValues.isEmpty()) {
-            System.out.println("OU");
-        }
-        return satisfactionValues;
-    }
-
+    /**
+     * Returns the specific satisfaction value on the flexibility curve value mapped to a timeslot,
+     * depending on the distance of the slot in question from the closest slot (in terms of start time)
+     * in an agent's preferences.
+     *
+     * @param slot Timeslot to be assessed.
+     * @return The satisfaction value corresponding to distance of timeslot in flexibility curve.
+     */
     int getFlexibleGain(int slot) {
             int target = slot;
             int gain;
+            //Start off the distance calculation with first element in requested slots.
             int distance = Math.abs(requestedTimeSlots.get(0)-target);
             int rSlot = 0;
+            //Find closest timeslot in requestedTimeSlots
             for(int c = 1; c<requestedTimeSlots.size(); c++) {
                 int cdistance = Math.abs(requestedTimeSlots.get(c)-target);
                 if(cdistance < distance) {
@@ -418,18 +374,18 @@ class Agent {
                     rSlot = requestedTimeSlots.get(c);
                 }
             }
+            //Adjust distance value
             if(slot<rSlot) {
                 distance = rSlot-slot;
             } else {
                 distance = slot-rSlot;
             }
-           // System.out.println("DISTAN " + distance);
+            //Assess gain from distance.
             if(flexibilityCurve.length>distance) {
                 int satisfaction = flexibilityCurve[distance];
                 gain = satisfaction;
-               //System.out.println(distance);
-               //System.out.println(satisfaction);
             } else {
+                //If the distance is not comprehended by curve, assign a gain of 0.
                 gain = 0;
             }
             return gain;
@@ -452,17 +408,7 @@ class Agent {
      * @return ArrayList<Integer> Returns the time slots that the Agent is allocated but may potentially exchange.
      */
     ArrayList<Integer> publishUnlockedTimeSlots() {
-        ArrayList<Integer> unlockedTimeSlots = new ArrayList<>();
-        /*if(useFlexibility && usesSocialCapital) {
-            for(int s : allocatedTimeSlots) {
-                int gain = getFlexibleGain(s, allocatedTimeSlots);
-                if (gain < maxGain-(marginOfKindness/2)) {
-                    unlockedTimeSlots.add(s);
-                }
-            }
-        } else {*/
-            unlockedTimeSlots = new ArrayList<>(nonExistingTimeSlots(allocatedTimeSlots, requestedTimeSlots));
-        //}
+        ArrayList<Integer> unlockedTimeSlots = new ArrayList<>(nonExistingTimeSlots(allocatedTimeSlots, requestedTimeSlots));
         return unlockedTimeSlots;
     }
 
@@ -565,8 +511,7 @@ class Agent {
             potentialAllocatedTimeSlots.add(exchangeRequestReceived.get(2));
             double potentialSatisfaction = calculateSatisfaction(potentialAllocatedTimeSlots);
 
-            // if (agentType == ResourceExchangeArena.SOCIAL && exchangeRequestReceived.get(3) == ResourceExchangeArena.SOCIAL) {
-            if (agentType == ResourceExchangeArena.SOCIAL) {
+              if (agentType == ResourceExchangeArena.SOCIAL) {
                 // Social Agents accept offers that improve their satisfaction or if they have negative social capital
                 // with the Agent who made the request.
                 if (Double.compare(potentialSatisfaction, currentSatisfaction) > 0) {
@@ -574,9 +519,11 @@ class Agent {
                     dailyNoSocialCapitalExchanges++;
                 } else if(Double.compare(potentialSatisfaction, currentSatisfaction) == 0){
                     if (usesSocialCapital) {
+                        //Check if social capital is individual (1) or global (2)
                         if(ResourceExchangeArena.SOCIAL_CAPITAL_TYPE == 1) {
                             int favoursOwedToRequester = 0;
                             int favoursGivenToRequester = 0;
+                            //Find agent in tracking and assess social capital
                             for (ArrayList<Integer> favours : favoursOwed) {
                                 if (favours.get(0).equals(exchangeRequestReceived.get(0))) {
                                     favoursOwedToRequester = favours.get(1);
@@ -594,10 +541,11 @@ class Agent {
                                 dailySocialCapitalExchanges++;
                             }
                         } else if(ResourceExchangeArena.SOCIAL_CAPITAL_TYPE == 2) {
+                            //Find agent in global reputation system and assess reputation
                             boolean isGood = this.reputationSystem.getAgentReputation(exchangeRequestReceived.get(0));
                             if (isGood) {
                                 dailySocialCapitalExchanges++;
-                                exchangeRequestApproved= true;
+                                exchangeRequestApproved = true;
                             }
                         }
                     } else {
@@ -607,6 +555,7 @@ class Agent {
                     }
                 } else if(Double.compare(potentialSatisfaction, currentSatisfaction) < 0){
                     if(usesSocialCapital && useFlexibility) {
+                        //Check if social capital is individual (1) or global (2)
                         if(ResourceExchangeArena.SOCIAL_CAPITAL_TYPE==1) {
                             int favoursOwedToRequester = 0;
                             int favoursGivenToRequester = 0;
@@ -622,9 +571,12 @@ class Agent {
                                     break;
                                 }
                             }
+                            //Assess social capital
                             if (favoursOwedToRequester > favoursGivenToRequester) {
                                 int requesterGain = exchangeRequestReceived.get(3);
                                 int myGain = getFlexibleGain(exchangeRequestReceived.get(1));
+                                //If the agent's gain is lower than the requesting agent's by
+                                //at least its margin of kindness, then accept the exchange.
                                 if(requesterGain-myGain>=marginOfKindness) {
                                     dailyNegativeExchanges++;
                                     exchangeRequestApproved = true;
@@ -698,10 +650,9 @@ class Agent {
         double newSatisfaction = calculateSatisfaction(allocatedTimeSlots);
         // Update the Agents relationship with the other Agent involved in the exchange.
         if (usesSocialCapital) {
-            // if (Double.compare(newSatisfaction, previousSatisfaction) > 0
-            //         && agentType == ResourceExchangeArena.SOCIAL && partnersAgentType == ResourceExchangeArena.SOCIAL) {
-            if (Double.compare(newSatisfaction, previousSatisfaction) > 0
+             if (Double.compare(newSatisfaction, previousSatisfaction) > 0
                     && agentType == ResourceExchangeArena.SOCIAL) {
+                //Check if social capital is individual (1) or global (2)
                     if(ResourceExchangeArena.SOCIAL_CAPITAL_TYPE==1) {
                         for (ArrayList<Integer> favours : favoursOwed) {
                             if (favours.get(0).equals(agentID)) {
@@ -737,8 +688,6 @@ class Agent {
 
         // Update the Agents relationship with the other Agent involved in the exchange.
         if (usesSocialCapital) {
-            // if (Double.compare(newSatisfaction, previousSatisfaction) <= 0
-            //         && agentType == ResourceExchangeArena.SOCIAL && partnersAgentType == ResourceExchangeArena.SOCIAL) {
             if (Double.compare(newSatisfaction, previousSatisfaction) <= 0
                     && agentType == ResourceExchangeArena.SOCIAL) {
                 if(ResourceExchangeArena.SOCIAL_CAPITAL_TYPE==1) {
@@ -759,13 +708,12 @@ class Agent {
         return SCLoss;
     }
 
+
     /**
-     * Calculates the Agents satisfaction with a given list of time slots by comparing the list with the time slots
-     * requested by this Agent.
-     *
+     * Pick which method to use to calculate agent satisfaction.
+     * @param timeSlots timeslot list to be assessed for satisfaction value.
      * @return Double The Agents satisfaction with the time slots given.
      */
-
     double calculateSatisfaction(ArrayList<Integer> timeSlots) {
         double sat;
         if(useFlexibility) {
@@ -775,6 +723,14 @@ class Agent {
         }
         return sat;
     }
+
+    /**
+     * Calculates the Agents satisfaction with a given list of time slots by comparing the list with the time slots
+     * requested by this Agent.
+     *
+     * @param timeSlots timeslot list to be assessed for satisfaction value.
+     * @return Double The Agents satisfaction with the time slots given.
+     */
     double calculateStandardSatisfaction(ArrayList<Integer> timeSlots) {
         if (timeSlots == null) {
             timeSlots = this.allocatedTimeSlots;
@@ -794,39 +750,23 @@ class Agent {
         return satisfiedSlots / numberOfTimeSlotsWanted;
     }
 
-    double calculateFlexbileSatisfaction(ArrayList<Integer> slots) {
-        if(slots == null) {
-            slots = this.allocatedTimeSlots;
+    /**
+     * Calculate satisfaction based on flexibility curve. Each timeslot has its gain depending on its distance
+     * from an agent's preferences.
+     *
+     * @param timeSlots timeslot list to be assessed for satisfaction value.
+     * @return Double The Agents satisfaction with the time slots given.
+     */
+    double calculateFlexbileSatisfaction(ArrayList<Integer> timeSlots) {
+        if(timeSlots == null) {
+            timeSlots = this.allocatedTimeSlots;
         }
         int maxSat = numberOfTimeSlotsWanted*ResourceExchangeArena.MAX_GAIN;
         int individualSlotsSatisfaction = 0;
-        for(int t : slots) {
+        for(int t : timeSlots) {
             individualSlotsSatisfaction = individualSlotsSatisfaction+getFlexibleGain(t);
         }
         double satisfaction = ((double)individualSlotsSatisfaction)/(double)maxSat;
         return satisfaction;
-    }
-
-    public boolean individualSocialCapitalExchange() {
-        boolean flag = false;
-        int favoursOwedToRequester = 0;
-        int favoursGivenToRequester = 0;
-        for (ArrayList<Integer> favours : favoursOwed) {
-            if (favours.get(0).equals(exchangeRequestReceived.get(0))) {
-                favoursOwedToRequester = favours.get(1);
-                break;
-            }
-        }
-        for (ArrayList<Integer> favours : favoursGiven) {
-            if (favours.get(0).equals(exchangeRequestReceived.get(0))) {
-                favoursGivenToRequester = favours.get(1);
-                break;
-            }
-        }
-        if (favoursOwedToRequester > favoursGivenToRequester) {
-            flag = true;
-            dailySocialCapitalExchanges++;
-        }
-        return flag;
     }
 }
