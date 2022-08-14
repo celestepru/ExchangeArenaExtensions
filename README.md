@@ -1,5 +1,7 @@
 # Resource Exchange Arena with Global Social Capital and Altruism
 
+_Author:_ Celeste Prussiani
+
 ### Work based on _Resource Exchange Arena 1.0_ by Nathan A. Brooks
 https://github.com/NathanABrooks/ResourceExchangeArena
 
