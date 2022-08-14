@@ -1,9 +1,10 @@
 # Resource Exchange Arena with Global Social Capital and Altruism
 
-_Author:_ Celeste Prussiani
 
 ### Work based on _Resource Exchange Arena 1.0_ by Nathan A. Brooks
 https://github.com/NathanABrooks/ResourceExchangeArena
+
+**Author:** Celeste Prussiani
 
 ### Description
 Smart energy refers to the integration of IT and electronics to build more reliable, engaging, and sustainable energy systems. While substituting traditional power systems with smart energy is considered ambitious, the step is essential to allow households to exclusively rely on Renewable Energy (RE) sources and address environmental concerns. The unpredictability of RE aggravates the problems linked to peak household energy consumption, which traditional price-based strategies such as demand-side management (DSM) have often been unsuccessful at mitigating. Multi-Agent Systems is a suitable methodology for problem domains such as energy optimisation, which involves complex, heterogenous entities, and is therefore being increasingly employed in smart grids for a variety of purposes.
